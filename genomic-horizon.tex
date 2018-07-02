@@ -104,6 +104,7 @@ Despite the reduction in cost, pathogen genome sequencing has not seen universal
 In this study we use a well-characterised Ebola virus dataset to show the differences in phylogenetic, temporal, and spatial resolution between complete genomes ($\sim$19kb long) and the rapidly evolving glycoprotein (GP) gene ($\sim$2kb long).
 By quantifying errors in phylogenetic reconstruction we hope to persuade researchers looking to sequence pathogens during outbreaks of the utility of complete genome sequencing.
 We further generalise our results by relating four parameters - probability, evolutionary rate, alignment length and waiting times - that determine how much information can be encoded by evolving pathogen lineages via mutations, which can help guide future sequencing studies.
+\tbc{The use of `probability', etc... here is a bit opaque.'}
 \end{abstract}
 
 $\ast$ \footnotesize{Corresponding author (gdudas@fredhutch.org)}
@@ -111,14 +112,16 @@ $\ast$ \footnotesize{Corresponding author (gdudas@fredhutch.org)}
 \pagebreak
 
 \section*{Introduction}
-The combination of decreasing cost of sequencing and the unparalleled insight it offers have led to the adoption of pathogen genetic sequencing as one of the most effective tools in the molecular epidemiologist's toolkit.
+The combination of decreasing cost of sequencing and the unparalleled insight it offers have led to the adoption of pathogen genetic sequencing as one of the most effective tools in an modern epidemiologist's toolkit.
 When coupled with sophisticated models of evolution, pathogen sequences can be used to look into epidemiological features such as cryptic transmission \citep{faria_establishment_2017}, migration \citep{dudas_virus_2017}, and origins \citep{smith_origins_2009} of infectious diseases, amongst others.
 Pathogen sequences also contain information about past temporal dynamics beyond the time span over which sequences have been collected \citep{raghwani_origin_2012} owing to inheritance of mutations by future generations.
 
 Molecular phylogenetic approaches rely on decoding these patterns of shared mutations into a nested data structure known as the phylogenetic tree.
+\tbc{`Data structure' seems overly technical here.}
 Population structure is often discernible in phylogenies, where specific lineages either arise via mutation or arrive from elsewhere and come to dominate within a particular demographic compartment (tissues, hosts, geographic areas, \textit{etc}.).
 Pathogens often have short generation times and low replication fidelity (RNA viruses) such that mutations are generated at a rapid pace \citep{drummond_measurably_2003,biek_measurably_2015}, thus differentiating lineages genetically as they spread.
-With appropriate sampling and information (``metadata'') about sequences, historical shifts in population structure can be inferred and quantified from pathogen phylogenies.
+With appropriate sampling and information (``metadata'') about sequences, historic population dynamics can be inferred and quantified from pathogen phylogenies.
+\tbc{This paragraph shoul be a bit more general than just about `population structure'. Recommend to cover `population dynamics', of which `population structure' is a part.}
 
 Before widespread adoption of high-throughput sequencing limitations and costs led to amplification and sequencing of short fragments of pathogen genomes \citep{jin_genetic_1999,jin_proposal_2005}.
 These subgenomic fragments were often chosen for their diversity, like viral surface glycoproteins evolving neutrally or under diversifying selection, or their utility, such as resistance profiling for HIV \textit{pol} \citep{kaye_phylogenetic_2008,rhee_human_2003}.
@@ -126,36 +129,29 @@ Whilst subgenomic fragments of pathogens are very accurate and specific as diagn
 
 Mutations, prior to the action of selection, occur randomly across a genome via misincorporation of nucleotides during replication by the polymerase.
 Many of these mutations are filtered out by selection if they adversely affect protein function, with leftover mutations being beneficial, neutral, or mildly deleterious.
-Neutral pathogen variation at the nucleotide level ebbs and flows with forces of population genetics but outnumbers beneficial variation that tends to sweep rapidly.
-Mutations are often modelled as a Poisson process \citep{jukes_evolution_1969}, and the probability of observing a mutation at a single site is exponentially distributed.
-The probability of 0 mutations at a single site is related to the waiting time \textit{t} and the rate at which mutations are observed in sequences \textit{R} (evolutionary rate): $e^{-Rt}$.
-The probability of at least one mutation at a single site after time \textit{t} under an evolutionary rate \textit{R} is therefore:
-
+Generally, neutral pathogen variation at the nucleotide level ebbs and flows with population demography but still outnumbers beneficial variation that tends to fix rapidly.
+Mutations are often modelled as a Poisson process \citep{yang_computational_2006}, and the waiting time $t$ for observing a mutation at a single site is exponentially distributed with evolutionary rate parameter $R$.
+Thus, the probability of observing 0 mutations at a single site after time $t$ is $e^{-Rt}$ and the probability of at least one mutation is $1-e^{-Rt}$.
+Higher evolutionary rates \textit{R} or waiting times \textit{t} result in higher probabilities of observing at least one mutation.
+Since sites are treated as evolving independently, the probability of observing a mutation across more than one site is related to the number of sites \textit{L} under observation
 \begin{equation}
-  P = 1-e^{-Rt}
+  P = 1-e^{-RLt},
 \end{equation}
-
-Higher evolutionary rates \textit{R} or waiting times \textit{t} result in higher probabilities of observing at least one mutation. Since sites are treated as evolving independently, the probability of observing a mutation across more than one site is related to the number of sites \textit{L} under observation:
-
-\begin{equation}
-  P = 1-e^{-RLt}
-\end{equation}
-
-Where -\textit{RL} corresponds to the raw rate of sampled mutations expressed as substitutions per year. Under a given evolutionary rate \textit{R}, probability of a mutation p, and sequence length \textit{L}, we can rearrange the equation to quantify the waiting times for mutations:
-
+where \textit{RL} is expressed in substitutions per year.
+Under a given evolutionary rate \textit{R}, probability of a mutation p, and sequence length \textit{L}, we can rearrange the equation to quantify the waiting times for mutations:
 \begin{equation}
   t = \frac{log(P)}{-RL}
 \end{equation}
-
+\tbc{Feels unnecessary and I'd just express this via the mean waiting time.}.
 When the evolutionary rate \textit{R}, sequence length \textit{L}, or probability of observing a mutation p are low waiting times are lengthened and vice versa.
-Since both maximum plausible evolutionary rates and genome length are dictated by deleterious mutation load \citep{gago_extremely_2009}, neither quantity will vary substantially for a given pathogen, especially viruses.
+Since both maximum plausible evolutionary rates and genome length are dictated by deleterious mutation load \citep{gago_extremely_2009}, neither quantity will vary substantially for a given pathogen, especially viruses \tbc{$RL$ won't vary substantially, though $R$ or $L$ individually might. Think of bacteria here.}.
 Because of these natural constraints there is thus a lower limit to how many mutations can be expected to occur in a given length of sequence evolving at a particular evolutionary rate.
 The mean waiting time for a mutation is easily calculated as 1/\textit{RL}.
 We refer to this mean waiting time as the temporal horizon, which reflects a theoretical temporal resolution over which mutations arise and are available for phylogenetic inference in a system.
 
 We use this study to argue in favour of sequencing complete pathogen genomes in outbreak scenarios where lineages need to be tracked at a fine scale.
 We base our argument on the fact that pathogen genomes have an inherent mutation/temporal resolution limit which is already substantial for fine scale epidemiology and that sequencing subgenomic fragments of a pathogen results in loss of information that can make sequence data unreliable beyond diagnostics and typing.
-We rely on a subset of a well characterised \citep{dudas_virus_2017} dataset of Ebola virus genomes from West Africa collected in 2014-2015.
+We rely on a subset of a well characterised dataset of Ebola virus genomes from West Africa collected in 2014-2015 \citep{dudas_virus_2017}.
 By analysing both complete viral genomes and the same dataset reduced to just the surface glycoprotein GP (corresponding to roughly 10\% of all available sites), we show substantial loss of predictive power, incorrect or unreliable reconstructions of past events, and migration model, despite increased evolutionary rate in GP compared to complete genome.
 We hope that analyses presented in this study serve as a guide for researchers doing genetic epidemiology and will be of interest to model developers too.
 
@@ -169,6 +165,8 @@ We hope that analyses presented in this study serve as a guide for researchers d
   In temporal phylogenies branches are also coloured based on GLM-inferred ancestral locations.
   Nodes in temporal phylogenies with <0.10 posterior probability are indicated with grey X marks.
   Maximum likelihood phylogenies on the right are rooted via temporal regression in TreeTime.
+  \tbc{I see why you mirrored x-axis in right hand panels, but this seems to make genome divergence look \textit{less} than GP divergence. I'd make these x-axes independent so that top right has axis of 0 to $\sim$0.002.}
+  \tbc{Also helpful to label the columns as `Time' and `Divergence'}.
 	}
 	\label{trees}
 \end{figure}
@@ -205,9 +203,12 @@ Similarly, there is a noticeable degree of branch clustering by country in the G
 \subsubsection*{Loss of temporal information}
 
 Inferring masked tip dates from 10\% of the sequences (Fig \ref{dates}) is possibly one of the most intuitive ways to show both the noisiness of molecular clock estimates, as reflected in the width of 95\% highest posterior density intervals for inferred dates, but also the differences between GP and genome alignments.
-True collection dates for genomes are mostly (56 out of 60) within the 95\% highest posterior density of estimated dates, and the absolute posterior error is around 0.081 years, corresponding to roughly a month of error across all masked tips.
-The 95\% HPDs for inferred dates in the GP dataset, on the other hand, manages to capture more of the true dates (58 out of 60) at the cost of markedly reduced precision, with absolute posterior error going up to 0.417 years (or close to 5 months).
+True collection dates for genomes are mostly (56 out of 60) within the 95\% highest posterior density of estimated dates \tbc{refer to thhis as measuring the `coverage probability'}, and the absolute posterior error is around 0.081 years, corresponding to $\sim$1.0 month of error across all masked tips.
+\tbc{Also report the average width of the individual CIs.}
+The 95\% HPDs for inferred dates in the GP dataset, on the other hand, manages to capture more of the true dates (58 out of 60) at the cost of markedly reduced precision, with absolute posterior error going up to 0.417 years or $\sim$5.0 months.
+\tbc{Also report the average width of the individual CIs.}
 Absolute error for both genome and GP datasets is relatively close to theoretical expectations: one month versus predicted 3 weeks for genomes, and 5 months versus expected 3-6 months.
+\tbc{How did you get these predictions? I think should include this calculation in Introduction.}
 For many tips in the GP dataset independent Markov chains converged onto different dates for masked tips (\textit{i.e.} local maxima) resulting in multi-peaked posterior samples after combining independent analyses.
 
 \begin{figure}[h]
@@ -255,19 +256,20 @@ This might reflect the nature of these parameters of interest, since phylogenies
 In contrast, migration is a far more complicated and nuanced process without a de facto standard for modelling, though continuous time Markov chain (CTMC) approaches are widely used.
 Despite lack of an overwhelmingly obvious contrast between inference of masked location between genomes and GP sequences, cross entropies indicate much better performance with the former, at 6816.772 and 11831.626, respectively.
 Similarly, locations are inferred correctly more often with complete genomes than with GP sequences (33 and 18, respectively).
+\tbc{Need to more carefully define what you mean by `inferred correctly'. Cross-entropy does this well, otherwise need a cut-off for assignment. Over 50\%?}
 Probability-weighted distances to the correct population centroid are also reduced for genomic data, at a posterior mean of 2.870 kilometres compared to 4.315 km for GP sequences.
 
 In addition to assessing how well tip locations can be inferred from genetic information we also looked at how well historical patterns were reconstructed from sequence data.
 To accomplish this we looked at the posterior distribution of ancestral locations for four tips with distinct histories.
-These are EBOV|14859\_EMLK|KU296438|SLE|Kambia|2015-04-30, a lineage that was part of the initial sweep of Ebola virus through Sierra Leone via Kailahun and Kenema districts which ended up in Conakry in Guinea from where it jumped back into Sierra Leone late in the epidemic.
-EBOV|EM\_004422|KR817097|GIN|Kissidougou|2015-01-02, which migrated through Kailahun district of Sierra Leone too, but then spread into Liberia from which it spilled back into Guinea via Macenta until being sequenced from a patient in Kissidougou, Guinea.
-Similar to other lineages, EBOV|MK3462|KU296565|SLE|Bombali|2015-03-26 was part of the sweep through Sierra Leone, though unlike others remained in-country, migrating to the environs of Freetown and then Bombali district where it was sequenced.
-EBOV|PL5294|KU296764|SLE|Kambia|2015-03-24, unlike others, belonged to a lineage that was not part of the Sierra Leonean sweep and instead part of an unusual and under-sampled lineage endemic to western Guinea, from where it spilled into Sierra Leone's Kambia district late in the epidemic.
+These are `14859\_EMLK', an infection whose lineage was part of the initial sweep of Ebola virus through Sierra Leone via Kailahun and Kenema districts which ended up in Conakry in Guinea from where it jumped back into Sierra Leone late in the epidemic.
+`EM\_004422', which migrated through Kailahun district of Sierra Leone too, but then spread into Liberia from which it spilled back into Guinea via Macenta until being sequenced from a patient in Kissidougou, Guinea.
+Similar to other lineages, `MK3462' was part of the sweep through Sierra Leone, though unlike others remained in-country, migrating to the environs of Freetown and then Bombali district where it was sequenced.
+`PL5294', unlike others, belonged to a lineage that was not part of the Sierra Leonean sweep and instead part of an unusual and under-sampled lineage endemic to western Guinea, from where it spilled into Sierra Leone's Kambia district late in the epidemic.
 
 The histories of these four tips are, for the most part, reconstructed from both GP sequences and genomes consistently.
 However, it is also clear that when using GP sequences location assignment is not as resolute as when genomes are used, and some historically established migration routes are omitted.
 Similarly, MCMC with GP sequences explores considerably more low-probability migration paths than genome data.
-In the case of EBOV|EM\_004422|KR817097|GIN|Kissidougou|2015-01-02, for example, a series of migrations through distant Conakry are reconstructed with relatively high confidence from GP sequences, compared to shorter distance migrations that run through neighbouring Liberia reconstructed from genomes.
+In the case of `EM\_004422', for example, a series of migrations through distant Conakry are reconstructed with relatively high confidence from GP sequences, compared to shorter distance migrations that run through neighbouring Liberia reconstructed from genomes.
 
 \subsubsection*{Migration models are broadly similar}
 
