@@ -1,0 +1,929 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     37662,        920]
+NotebookOptionsPosition[     34214,        795]
+NotebookOutlinePosition[     34601,        812]
+CellTagsIndexPosition[     34558,        809]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+Assess classification accuracy of phylogeographic reconstruction\
+\>", "Title",
+ CellChangeTimes->{{3.739630297234654*^9, 3.739630310378126*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"SetDirectory", "[", 
+  RowBox[{"NotebookDirectory", "[", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.739630436679858*^9, 3.739630445894959*^9}}],
+
+Cell[BoxData["\<\"/Users/trvrb/Documents/src/genomic-horizon/geo-performance\"\
+\>"], "Output",
+ CellChangeTimes->{3.739630446358807*^9, 3.7396306815313377`*^9, 
+  3.7396307231970377`*^9, 3.739631661643811*^9, 3.7396321874217567`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["GP", "Section",
+ CellChangeTimes->{{3.739632165121505*^9, 3.73963218405707*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Data", "Subsection",
+ CellChangeTimes->{{3.739630451862315*^9, 3.739630452317328*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"data", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{"\"\<Fig3_locations_gp.tsv\>\"", ",", "\"\<Table\>\""}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.7396304543338833`*^9, 3.7396304550539627`*^9}, {
+   3.7396307303906603`*^9, 3.7396307417335873`*^9}, 3.739630828911517*^9, {
+   3.739631611467724*^9, 3.739631611678278*^9}, {3.739631673720337*^9, 
+   3.73963167453986*^9}, {3.739632186110668*^9, 3.739632186265778*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"header", "=", 
+   RowBox[{"data", "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.739631105435605*^9, 3.7396311100189857`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"headerRules", "=", 
+  RowBox[{"MapIndexed", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"#2", "[", 
+       RowBox[{"[", "1", "]"}], "]"}], "\[Rule]", "#1"}], "&"}], ",", 
+    "header"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.73963084371098*^9, 3.73963087116073*^9}, 
+   3.739631113432692*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"1", "\[Rule]", "\<\"tip\"\>"}], ",", 
+   RowBox[{"2", "\[Rule]", "\<\"loc\"\>"}], ",", 
+   RowBox[{"3", "\[Rule]", "\<\"loc_prob\"\>"}], ",", 
+   RowBox[{"4", "\[Rule]", "\<\"pred_loc\"\>"}], ",", 
+   RowBox[{"5", "\[Rule]", "\<\"Lola_prob\"\>"}], ",", 
+   RowBox[{"6", "\[Rule]", "\<\"Beyla_prob\"\>"}], ",", 
+   RowBox[{"7", "\[Rule]", "\<\"Nzerekore_prob\"\>"}], ",", 
+   RowBox[{"8", "\[Rule]", "\<\"Yamou_prob\"\>"}], ",", 
+   RowBox[{"9", "\[Rule]", "\<\"Macenta_prob\"\>"}], ",", 
+   RowBox[{"10", "\[Rule]", "\<\"Kerouane_prob\"\>"}], ",", 
+   RowBox[{"11", "\[Rule]", "\<\"Gueckedou_prob\"\>"}], ",", 
+   RowBox[{"12", "\[Rule]", "\<\"Kankan_prob\"\>"}], ",", 
+   RowBox[{"13", "\[Rule]", "\<\"Mandiana_prob\"\>"}], ",", 
+   RowBox[{"14", "\[Rule]", "\<\"Kissidougou_prob\"\>"}], ",", 
+   RowBox[{"15", "\[Rule]", "\<\"Siguiri_prob\"\>"}], ",", 
+   RowBox[{"16", "\[Rule]", "\<\"Kouroussa_prob\"\>"}], ",", 
+   RowBox[{"17", "\[Rule]", "\<\"Faranah_prob\"\>"}], ",", 
+   RowBox[{"18", "\[Rule]", "\<\"Dabola_prob\"\>"}], ",", 
+   RowBox[{"19", "\[Rule]", "\<\"Dinguiraye_prob\"\>"}], ",", 
+   RowBox[{"20", "\[Rule]", "\<\"Mamou_prob\"\>"}], ",", 
+   RowBox[{"21", "\[Rule]", "\<\"Tougue_prob\"\>"}], ",", 
+   RowBox[{"22", "\[Rule]", "\<\"Dalaba_prob\"\>"}], ",", 
+   RowBox[{"23", "\[Rule]", "\<\"Koubia_prob\"\>"}], ",", 
+   RowBox[{"24", "\[Rule]", "\<\"Forecariah_prob\"\>"}], ",", 
+   RowBox[{"25", "\[Rule]", "\<\"Kindia_prob\"\>"}], ",", 
+   RowBox[{"26", "\[Rule]", "\<\"Labe_prob\"\>"}], ",", 
+   RowBox[{"27", "\[Rule]", "\<\"Pita_prob\"\>"}], ",", 
+   RowBox[{"28", "\[Rule]", "\<\"Coyah_prob\"\>"}], ",", 
+   RowBox[{"29", "\[Rule]", "\<\"Mali_prob\"\>"}], ",", 
+   RowBox[{"30", "\[Rule]", "\<\"Lelouma_prob\"\>"}], ",", 
+   RowBox[{"31", "\[Rule]", "\<\"Conakry_prob\"\>"}], ",", 
+   RowBox[{"32", "\[Rule]", "\<\"Telimele_prob\"\>"}], ",", 
+   RowBox[{"33", "\[Rule]", "\<\"Dubreka_prob\"\>"}], ",", 
+   RowBox[{"34", "\[Rule]", "\<\"Fria_prob\"\>"}], ",", 
+   RowBox[{"35", "\[Rule]", "\<\"Boffa_prob\"\>"}], ",", 
+   RowBox[{"36", "\[Rule]", "\<\"Gaoual_prob\"\>"}], ",", 
+   RowBox[{"37", "\[Rule]", "\<\"Koundara_prob\"\>"}], ",", 
+   RowBox[{"38", "\[Rule]", "\<\"Boke_prob\"\>"}], ",", 
+   RowBox[{"39", "\[Rule]", "\<\"Maryland_prob\"\>"}], ",", 
+   RowBox[{"40", "\[Rule]", "\<\"RiverGee_prob\"\>"}], ",", 
+   RowBox[{"41", "\[Rule]", "\<\"GrandKru_prob\"\>"}], ",", 
+   RowBox[{"42", "\[Rule]", "\<\"GrandGedeh_prob\"\>"}], ",", 
+   RowBox[{"43", "\[Rule]", "\<\"Sinoe_prob\"\>"}], ",", 
+   RowBox[{"44", "\[Rule]", "\<\"RiverCess_prob\"\>"}], ",", 
+   RowBox[{"45", "\[Rule]", "\<\"Nimba_prob\"\>"}], ",", 
+   RowBox[{"46", "\[Rule]", "\<\"GrandBassa_prob\"\>"}], ",", 
+   RowBox[{"47", "\[Rule]", "\<\"Margibi_prob\"\>"}], ",", 
+   RowBox[{"48", "\[Rule]", "\<\"Bong_prob\"\>"}], ",", 
+   RowBox[{"49", "\[Rule]", "\<\"Montserrado_prob\"\>"}], ",", 
+   RowBox[{"50", "\[Rule]", "\<\"Bomi_prob\"\>"}], ",", 
+   RowBox[{"51", "\[Rule]", "\<\"Lofa_prob\"\>"}], ",", 
+   RowBox[{"52", "\[Rule]", "\<\"Gbarpolu_prob\"\>"}], ",", 
+   RowBox[{"53", "\[Rule]", "\<\"GrandCapeMount_prob\"\>"}], ",", 
+   RowBox[{"54", "\[Rule]", "\<\"Kailahun_prob\"\>"}], ",", 
+   RowBox[{"55", "\[Rule]", "\<\"Kenema_prob\"\>"}], ",", 
+   RowBox[{"56", "\[Rule]", "\<\"Kono_prob\"\>"}], ",", 
+   RowBox[{"57", "\[Rule]", "\<\"Pujehun_prob\"\>"}], ",", 
+   RowBox[{"58", "\[Rule]", "\<\"Bo_prob\"\>"}], ",", 
+   RowBox[{"59", "\[Rule]", "\<\"Bonthe_prob\"\>"}], ",", 
+   RowBox[{"60", "\[Rule]", "\<\"Moyamba_prob\"\>"}], ",", 
+   RowBox[{"61", "\[Rule]", "\<\"Koinadugu_prob\"\>"}], ",", 
+   RowBox[{"62", "\[Rule]", "\<\"Tonkolili_prob\"\>"}], ",", 
+   RowBox[{"63", "\[Rule]", "\<\"Bombali_prob\"\>"}], ",", 
+   RowBox[{"64", "\[Rule]", "\<\"PortLoko_prob\"\>"}], ",", 
+   RowBox[{"65", "\[Rule]", "\<\"WesternRural_prob\"\>"}], ",", 
+   RowBox[{"66", "\[Rule]", "\<\"Kambia_prob\"\>"}], ",", 
+   RowBox[{"67", "\[Rule]", "\<\"WesternUrban_prob\"\>"}]}], "}"}]], "Output",\
+
+ CellChangeTimes->{{3.739630846872046*^9, 3.739630889380204*^9}, 
+   3.739631076221889*^9, 3.73963111589384*^9, 3.739631613731513*^9, 
+   3.7396316768650837`*^9, 3.7396321875871887`*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"data", "=", 
+   RowBox[{"Drop", "[", 
+    RowBox[{"data", ",", "1"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.739630874364612*^9, 3.739630886625128*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"locs", "=", 
+  RowBox[{"Map", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"StringReplace", "[", 
+      RowBox[{"#", ",", 
+       RowBox[{"\"\<_prob\>\"", "\[Rule]", "\"\<\>\""}]}], "]"}], "&"}], ",", 
+    
+    RowBox[{"header", "[", 
+     RowBox[{"[", 
+      RowBox[{"5", ";;", 
+       RowBox[{"-", "1"}]}], "]"}], "]"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.739631127858535*^9, 3.739631212178926*^9}, {
+  3.739631685790913*^9, 3.739631685907647*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"Lola\"\>", ",", "\<\"Beyla\"\>", ",", "\<\"Nzerekore\"\>", 
+   ",", "\<\"Yamou\"\>", ",", "\<\"Macenta\"\>", ",", "\<\"Kerouane\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Kankan\"\>", ",", "\<\"Mandiana\"\>", 
+   ",", "\<\"Kissidougou\"\>", ",", "\<\"Siguiri\"\>", 
+   ",", "\<\"Kouroussa\"\>", ",", "\<\"Faranah\"\>", ",", "\<\"Dabola\"\>", 
+   ",", "\<\"Dinguiraye\"\>", ",", "\<\"Mamou\"\>", ",", "\<\"Tougue\"\>", 
+   ",", "\<\"Dalaba\"\>", ",", "\<\"Koubia\"\>", ",", "\<\"Forecariah\"\>", 
+   ",", "\<\"Kindia\"\>", ",", "\<\"Labe\"\>", ",", "\<\"Pita\"\>", 
+   ",", "\<\"Coyah\"\>", ",", "\<\"Mali\"\>", ",", "\<\"Lelouma\"\>", 
+   ",", "\<\"Conakry\"\>", ",", "\<\"Telimele\"\>", ",", "\<\"Dubreka\"\>", 
+   ",", "\<\"Fria\"\>", ",", "\<\"Boffa\"\>", ",", "\<\"Gaoual\"\>", 
+   ",", "\<\"Koundara\"\>", ",", "\<\"Boke\"\>", ",", "\<\"Maryland\"\>", 
+   ",", "\<\"RiverGee\"\>", ",", "\<\"GrandKru\"\>", 
+   ",", "\<\"GrandGedeh\"\>", ",", "\<\"Sinoe\"\>", ",", "\<\"RiverCess\"\>", 
+   ",", "\<\"Nimba\"\>", ",", "\<\"GrandBassa\"\>", ",", "\<\"Margibi\"\>", 
+   ",", "\<\"Bong\"\>", ",", "\<\"Montserrado\"\>", ",", "\<\"Bomi\"\>", 
+   ",", "\<\"Lofa\"\>", ",", "\<\"Gbarpolu\"\>", 
+   ",", "\<\"GrandCapeMount\"\>", ",", "\<\"Kailahun\"\>", 
+   ",", "\<\"Kenema\"\>", ",", "\<\"Kono\"\>", ",", "\<\"Pujehun\"\>", 
+   ",", "\<\"Bo\"\>", ",", "\<\"Bonthe\"\>", ",", "\<\"Moyamba\"\>", 
+   ",", "\<\"Koinadugu\"\>", ",", "\<\"Tonkolili\"\>", ",", "\<\"Bombali\"\>",
+    ",", "\<\"PortLoko\"\>", ",", "\<\"WesternRural\"\>", 
+   ",", "\<\"Kambia\"\>", ",", "\<\"WesternUrban\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{{3.7396311298583717`*^9, 3.739631162280994*^9}, {
+   3.739631199935587*^9, 3.739631219532658*^9}, 3.739631616471428*^9, 
+   3.7396316864598103`*^9, 3.739632187663577*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Realized accuracy", "Subsection",
+ CellChangeTimes->{{3.739630833079567*^9, 3.739630837726375*^9}}],
+
+Cell["How good was the model at predicting test data?", "Text",
+ CellChangeTimes->{{3.739631899139514*^9, 3.739631907538615*^9}}],
+
+Cell["True locations", "Text",
+ CellChangeTimes->{{3.7396309630881147`*^9, 3.739630974989616*^9}, {
+  3.739631737203917*^9, 3.739631738755486*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"trueLocs", "=", 
+  RowBox[{"data", "[", 
+   RowBox[{"[", 
+    RowBox[{"All", ",", "2"}], "]"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.739631724467022*^9, 3.7396317334855824`*^9}, {
+  3.739631778541432*^9, 3.739631781493082*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"Beyla\"\>", ",", "\<\"Nzerekore\"\>", ",", "\<\"Macenta\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Kouroussa\"\>", ",", "\<\"Coyah\"\>", 
+   ",", "\<\"Coyah\"\>", ",", "\<\"Coyah\"\>", ",", "\<\"Conakry\"\>", 
+   ",", "\<\"Conakry\"\>", ",", "\<\"Nimba\"\>", ",", "\<\"Montserrado\"\>", 
+   ",", "\<\"Montserrado\"\>", ",", "\<\"Montserrado\"\>", 
+   ",", "\<\"Montserrado\"\>", ",", "\<\"Bomi\"\>", ",", "\<\"Lofa\"\>", 
+   ",", "\<\"Lofa\"\>", ",", "\<\"Kailahun\"\>", ",", "\<\"Kailahun\"\>", 
+   ",", "\<\"Kailahun\"\>", ",", "\<\"Kailahun\"\>", ",", "\<\"Kenema\"\>", 
+   ",", "\<\"Kenema\"\>", ",", "\<\"Kenema\"\>", ",", "\<\"Kenema\"\>", 
+   ",", "\<\"Kenema\"\>", ",", "\<\"Kono\"\>", ",", "\<\"Moyamba\"\>", 
+   ",", "\<\"Koinadugu\"\>", ",", "\<\"Tonkolili\"\>", 
+   ",", "\<\"Tonkolili\"\>", ",", "\<\"Tonkolili\"\>", ",", "\<\"Bombali\"\>",
+    ",", "\<\"Bombali\"\>", ",", "\<\"Bombali\"\>", ",", "\<\"Bombali\"\>", 
+   ",", "\<\"Bombali\"\>", ",", "\<\"PortLoko\"\>", ",", "\<\"PortLoko\"\>", 
+   ",", "\<\"PortLoko\"\>", ",", "\<\"WesternRural\"\>", 
+   ",", "\<\"WesternRural\"\>", ",", "\<\"WesternRural\"\>", 
+   ",", "\<\"Kambia\"\>", ",", "\<\"Kambia\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"WesternArea\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{3.7396317339808073`*^9, 3.739631781912548*^9, 
+  3.739632187718865*^9}]
+}, Open  ]],
+
+Cell["Predicted locations", "Text",
+ CellChangeTimes->{{3.73963174133911*^9, 3.73963174820317*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"predLocs", "=", 
+  RowBox[{"data", "[", 
+   RowBox[{"[", 
+    RowBox[{"All", ",", "4"}], "]"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.739631724467022*^9, 3.7396317508118477`*^9}, {
+  3.7396317834868402`*^9, 3.739631784621478*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"Kissidougou\"\>", ",", "\<\"Kambia\"\>", 
+   ",", "\<\"Conakry\"\>", ",", "\<\"Kambia\"\>", ",", "\<\"Kailahun\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", ",", "\<\"Moyamba\"\>",
+    ",", "\<\"Kambia\"\>", ",", "\<\"Conakry\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Kambia\"\>", ",", "\<\"Kailahun\"\>", 
+   ",", "\<\"Kambia\"\>", ",", "\<\"Kenema\"\>", ",", "\<\"Montserrado\"\>", 
+   ",", "\<\"Montserrado\"\>", ",", "\<\"Kambia\"\>", ",", "\<\"PortLoko\"\>",
+    ",", "\<\"Kambia\"\>", ",", "\<\"Kambia\"\>", ",", "\<\"Kailahun\"\>", 
+   ",", "\<\"Kambia\"\>", ",", "\<\"Kambia\"\>", ",", "\<\"Kambia\"\>", 
+   ",", "\<\"Kambia\"\>", ",", "\<\"Kailahun\"\>", ",", "\<\"Kenema\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"Moyamba\"\>", 
+   ",", "\<\"Koinadugu\"\>", ",", "\<\"Kambia\"\>", ",", "\<\"Kambia\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Kailahun\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Bombali\"\>", ",", "\<\"PortLoko\"\>", 
+   ",", "\<\"PortLoko\"\>", ",", "\<\"Kailahun\"\>", ",", "\<\"Bombali\"\>", 
+   ",", "\<\"WesternRural\"\>", ",", "\<\"Kambia\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Kambia\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"PortLoko\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"PortLoko\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Bombali\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{3.739631751272436*^9, 3.7396317850413723`*^9, 
+  3.739632187798937*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"correctPredictions", "=", 
+  RowBox[{"Count", "[", 
+   RowBox[{
+    RowBox[{"MapThread", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"#1", "\[Equal]", "#2"}], ",", "True", ",", "False"}], "]"}],
+        "&"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"trueLocs", ",", "predLocs"}], "}"}]}], "]"}], ",", "True"}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.739631771923512*^9, 3.739631845244014*^9}}],
+
+Cell[BoxData["18"], "Output",
+ CellChangeTimes->{{3.739631792236072*^9, 3.739631845833392*^9}, 
+   3.739632187868917*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"realizedAccuracy", "=", 
+  RowBox[{"N", "[", 
+   RowBox[{"correctPredictions", "/", 
+    RowBox[{"Length", "[", "data", "]"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.739631848059116*^9, 3.739631861747628*^9}}],
+
+Cell[BoxData["0.3`"], "Output",
+ CellChangeTimes->{{3.739631858475376*^9, 3.739631862017737*^9}, 
+   3.739632187941298*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Predicted accuracy", "Subsection",
+ CellChangeTimes->{{3.739631887699705*^9, 3.739631895730659*^9}}],
+
+Cell[TextData[{
+ "How good does the model ",
+ StyleBox["think",
+  FontSlant->"Italic"],
+ " it will be at predicting test data?"
+}], "Text",
+ CellChangeTimes->{{3.73963191099432*^9, 3.739631924114142*^9}}],
+
+Cell["Model confidence in calls:", "Text",
+ CellChangeTimes->{{3.7396321148402452`*^9, 3.7396321279349337`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"modelConfidence", "=", 
+  RowBox[{"Map", "[", 
+   RowBox[{"Max", ",", 
+    RowBox[{"data", "[", 
+     RowBox[{"[", 
+      RowBox[{"All", ",", 
+       RowBox[{"5", ";;", 
+        RowBox[{"-", "1"}]}]}], "]"}], "]"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.739632062365048*^9, 3.739632133999619*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "0.231676063557`", ",", "0.296770886725`", ",", "0.261916965659`", ",", 
+   "0.156330087135`", ",", "0.337262942081`", ",", "0.71348026653`", ",", 
+   "0.701178882624`", ",", "0.760635571502`", ",", "0.552024602768`", ",", 
+   "0.76217324449`", ",", "0.7565351102`", ",", "0.898001025115`", ",", 
+   "0.45310097386`", ",", "0.218862121989`", ",", "0.386981035366`", ",", 
+   "0.401845207586`", ",", "0.382368016402`", ",", "0.176319835982`", ",", 
+   "0.534085084572`", ",", "0.169144028703`", ",", "0.718093285495`", ",", 
+   "0.78831368529`", ",", "0.246027678114`", ",", "0.266529984623`", ",", 
+   "0.377242439774`", ",", "0.524859046643`", ",", "0.611993849308`", ",", 
+   "0.207585853409`", ",", "0.201435161456`", ",", "0.558687852383`", ",", 
+   "0.325474115838`", ",", "0.385955920041`", ",", "0.547924141466`", ",", 
+   "0.447975397232`", ",", "0.712967708867`", ",", "0.849308047155`", ",", 
+   "0.677601230138`", ",", "0.607893388006`", ",", "0.630958482829`", ",", 
+   "0.339313172732`", ",", "0.609431060994`", ",", "0.523321373655`", ",", 
+   "0.460276781138`", ",", "0.420809841107`", ",", "0.954894925679`", ",", 
+   "0.7303946694`", ",", "0.426447975397`", ",", "0.420809841107`", ",", 
+   "0.657098923629`", ",", "0.384418247053`", ",", "0.79958995387`", ",", 
+   "0.537160430548`", ",", "0.107637109175`", ",", "0.828293182983`", ",", 
+   "0.763198359815`", ",", "0.399282419272`", ",", "0.61609431061`", ",", 
+   "0.515633008713`", ",", "0.646335212711`", ",", "0.423885187084`"}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.739632064818075*^9, 3.7396321344094*^9}, 
+   3.739632187973518*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Mean", "[", "modelConfidence", "]"}]], "Input",
+ CellChangeTimes->{{3.739632135821713*^9, 3.739632140202076*^9}}],
+
+Cell[BoxData["0.5066974201264167`"], "Output",
+ CellChangeTimes->{3.739632140643797*^9, 3.739632188034618*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Genome", "Section",
+ CellChangeTimes->{{3.739632165121505*^9, 3.739632165720625*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Data", "Subsection",
+ CellChangeTimes->{{3.739630451862315*^9, 3.739630452317328*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"data", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{"\"\<Fig3_locations_genome.tsv\>\"", ",", "\"\<Table\>\""}], 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7396304543338833`*^9, 3.7396304550539627`*^9}, {
+   3.7396307303906603`*^9, 3.7396307417335873`*^9}, 3.739630828911517*^9, {
+   3.739631611467724*^9, 3.739631611678278*^9}, {3.739631673720337*^9, 
+   3.73963167453986*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"header", "=", 
+   RowBox[{"data", "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.739631105435605*^9, 3.7396311100189857`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"headerRules", "=", 
+  RowBox[{"MapIndexed", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"#2", "[", 
+       RowBox[{"[", "1", "]"}], "]"}], "\[Rule]", "#1"}], "&"}], ",", 
+    "header"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.73963084371098*^9, 3.73963087116073*^9}, 
+   3.739631113432692*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"1", "\[Rule]", "\<\"tip\"\>"}], ",", 
+   RowBox[{"2", "\[Rule]", "\<\"true_loc\"\>"}], ",", 
+   RowBox[{"3", "\[Rule]", "\<\"true_loc_prob\"\>"}], ",", 
+   RowBox[{"4", "\[Rule]", "\<\"pred_loc\"\>"}], ",", 
+   RowBox[{"5", "\[Rule]", "\<\"Lola_prob\"\>"}], ",", 
+   RowBox[{"6", "\[Rule]", "\<\"Beyla_prob\"\>"}], ",", 
+   RowBox[{"7", "\[Rule]", "\<\"Nzerekore_prob\"\>"}], ",", 
+   RowBox[{"8", "\[Rule]", "\<\"Yamou_prob\"\>"}], ",", 
+   RowBox[{"9", "\[Rule]", "\<\"Macenta_prob\"\>"}], ",", 
+   RowBox[{"10", "\[Rule]", "\<\"Kerouane_prob\"\>"}], ",", 
+   RowBox[{"11", "\[Rule]", "\<\"Gueckedou_prob\"\>"}], ",", 
+   RowBox[{"12", "\[Rule]", "\<\"Kankan_prob\"\>"}], ",", 
+   RowBox[{"13", "\[Rule]", "\<\"Mandiana_prob\"\>"}], ",", 
+   RowBox[{"14", "\[Rule]", "\<\"Kissidougou_prob\"\>"}], ",", 
+   RowBox[{"15", "\[Rule]", "\<\"Siguiri_prob\"\>"}], ",", 
+   RowBox[{"16", "\[Rule]", "\<\"Kouroussa_prob\"\>"}], ",", 
+   RowBox[{"17", "\[Rule]", "\<\"Faranah_prob\"\>"}], ",", 
+   RowBox[{"18", "\[Rule]", "\<\"Dabola_prob\"\>"}], ",", 
+   RowBox[{"19", "\[Rule]", "\<\"Dinguiraye_prob\"\>"}], ",", 
+   RowBox[{"20", "\[Rule]", "\<\"Mamou_prob\"\>"}], ",", 
+   RowBox[{"21", "\[Rule]", "\<\"Tougue_prob\"\>"}], ",", 
+   RowBox[{"22", "\[Rule]", "\<\"Dalaba_prob\"\>"}], ",", 
+   RowBox[{"23", "\[Rule]", "\<\"Koubia_prob\"\>"}], ",", 
+   RowBox[{"24", "\[Rule]", "\<\"Forecariah_prob\"\>"}], ",", 
+   RowBox[{"25", "\[Rule]", "\<\"Kindia_prob\"\>"}], ",", 
+   RowBox[{"26", "\[Rule]", "\<\"Labe_prob\"\>"}], ",", 
+   RowBox[{"27", "\[Rule]", "\<\"Pita_prob\"\>"}], ",", 
+   RowBox[{"28", "\[Rule]", "\<\"Coyah_prob\"\>"}], ",", 
+   RowBox[{"29", "\[Rule]", "\<\"Mali_prob\"\>"}], ",", 
+   RowBox[{"30", "\[Rule]", "\<\"Lelouma_prob\"\>"}], ",", 
+   RowBox[{"31", "\[Rule]", "\<\"Conakry_prob\"\>"}], ",", 
+   RowBox[{"32", "\[Rule]", "\<\"Telimele_prob\"\>"}], ",", 
+   RowBox[{"33", "\[Rule]", "\<\"Dubreka_prob\"\>"}], ",", 
+   RowBox[{"34", "\[Rule]", "\<\"Fria_prob\"\>"}], ",", 
+   RowBox[{"35", "\[Rule]", "\<\"Boffa_prob\"\>"}], ",", 
+   RowBox[{"36", "\[Rule]", "\<\"Gaoual_prob\"\>"}], ",", 
+   RowBox[{"37", "\[Rule]", "\<\"Koundara_prob\"\>"}], ",", 
+   RowBox[{"38", "\[Rule]", "\<\"Boke_prob\"\>"}], ",", 
+   RowBox[{"39", "\[Rule]", "\<\"Maryland_prob\"\>"}], ",", 
+   RowBox[{"40", "\[Rule]", "\<\"RiverGee_prob\"\>"}], ",", 
+   RowBox[{"41", "\[Rule]", "\<\"GrandKru_prob\"\>"}], ",", 
+   RowBox[{"42", "\[Rule]", "\<\"GrandGedeh_prob\"\>"}], ",", 
+   RowBox[{"43", "\[Rule]", "\<\"Sinoe_prob\"\>"}], ",", 
+   RowBox[{"44", "\[Rule]", "\<\"RiverCess_prob\"\>"}], ",", 
+   RowBox[{"45", "\[Rule]", "\<\"Nimba_prob\"\>"}], ",", 
+   RowBox[{"46", "\[Rule]", "\<\"GrandBassa_prob\"\>"}], ",", 
+   RowBox[{"47", "\[Rule]", "\<\"Margibi_prob\"\>"}], ",", 
+   RowBox[{"48", "\[Rule]", "\<\"Bong_prob\"\>"}], ",", 
+   RowBox[{"49", "\[Rule]", "\<\"Montserrado_prob\"\>"}], ",", 
+   RowBox[{"50", "\[Rule]", "\<\"Bomi_prob\"\>"}], ",", 
+   RowBox[{"51", "\[Rule]", "\<\"Lofa_prob\"\>"}], ",", 
+   RowBox[{"52", "\[Rule]", "\<\"Gbarpolu_prob\"\>"}], ",", 
+   RowBox[{"53", "\[Rule]", "\<\"GrandCapeMount_prob\"\>"}], ",", 
+   RowBox[{"54", "\[Rule]", "\<\"Kailahun_prob\"\>"}], ",", 
+   RowBox[{"55", "\[Rule]", "\<\"Kenema_prob\"\>"}], ",", 
+   RowBox[{"56", "\[Rule]", "\<\"Kono_prob\"\>"}], ",", 
+   RowBox[{"57", "\[Rule]", "\<\"Pujehun_prob\"\>"}], ",", 
+   RowBox[{"58", "\[Rule]", "\<\"Bo_prob\"\>"}], ",", 
+   RowBox[{"59", "\[Rule]", "\<\"Bonthe_prob\"\>"}], ",", 
+   RowBox[{"60", "\[Rule]", "\<\"Moyamba_prob\"\>"}], ",", 
+   RowBox[{"61", "\[Rule]", "\<\"Koinadugu_prob\"\>"}], ",", 
+   RowBox[{"62", "\[Rule]", "\<\"Tonkolili_prob\"\>"}], ",", 
+   RowBox[{"63", "\[Rule]", "\<\"Bombali_prob\"\>"}], ",", 
+   RowBox[{"64", "\[Rule]", "\<\"PortLoko_prob\"\>"}], ",", 
+   RowBox[{"65", "\[Rule]", "\<\"WesternRural_prob\"\>"}], ",", 
+   RowBox[{"66", "\[Rule]", "\<\"Kambia_prob\"\>"}], ",", 
+   RowBox[{"67", "\[Rule]", "\<\"WesternUrban_prob\"\>"}]}], "}"}]], "Output",\
+
+ CellChangeTimes->{{3.739630846872046*^9, 3.739630889380204*^9}, 
+   3.739631076221889*^9, 3.73963111589384*^9, 3.739631613731513*^9, 
+   3.7396316768650837`*^9, 3.7396321881245537`*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"data", "=", 
+   RowBox[{"Drop", "[", 
+    RowBox[{"data", ",", "1"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.739630874364612*^9, 3.739630886625128*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"locs", "=", 
+  RowBox[{"Map", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"StringReplace", "[", 
+      RowBox[{"#", ",", 
+       RowBox[{"\"\<_prob\>\"", "\[Rule]", "\"\<\>\""}]}], "]"}], "&"}], ",", 
+    
+    RowBox[{"header", "[", 
+     RowBox[{"[", 
+      RowBox[{"5", ";;", 
+       RowBox[{"-", "1"}]}], "]"}], "]"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.739631127858535*^9, 3.739631212178926*^9}, {
+  3.739631685790913*^9, 3.739631685907647*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"Lola\"\>", ",", "\<\"Beyla\"\>", ",", "\<\"Nzerekore\"\>", 
+   ",", "\<\"Yamou\"\>", ",", "\<\"Macenta\"\>", ",", "\<\"Kerouane\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Kankan\"\>", ",", "\<\"Mandiana\"\>", 
+   ",", "\<\"Kissidougou\"\>", ",", "\<\"Siguiri\"\>", 
+   ",", "\<\"Kouroussa\"\>", ",", "\<\"Faranah\"\>", ",", "\<\"Dabola\"\>", 
+   ",", "\<\"Dinguiraye\"\>", ",", "\<\"Mamou\"\>", ",", "\<\"Tougue\"\>", 
+   ",", "\<\"Dalaba\"\>", ",", "\<\"Koubia\"\>", ",", "\<\"Forecariah\"\>", 
+   ",", "\<\"Kindia\"\>", ",", "\<\"Labe\"\>", ",", "\<\"Pita\"\>", 
+   ",", "\<\"Coyah\"\>", ",", "\<\"Mali\"\>", ",", "\<\"Lelouma\"\>", 
+   ",", "\<\"Conakry\"\>", ",", "\<\"Telimele\"\>", ",", "\<\"Dubreka\"\>", 
+   ",", "\<\"Fria\"\>", ",", "\<\"Boffa\"\>", ",", "\<\"Gaoual\"\>", 
+   ",", "\<\"Koundara\"\>", ",", "\<\"Boke\"\>", ",", "\<\"Maryland\"\>", 
+   ",", "\<\"RiverGee\"\>", ",", "\<\"GrandKru\"\>", 
+   ",", "\<\"GrandGedeh\"\>", ",", "\<\"Sinoe\"\>", ",", "\<\"RiverCess\"\>", 
+   ",", "\<\"Nimba\"\>", ",", "\<\"GrandBassa\"\>", ",", "\<\"Margibi\"\>", 
+   ",", "\<\"Bong\"\>", ",", "\<\"Montserrado\"\>", ",", "\<\"Bomi\"\>", 
+   ",", "\<\"Lofa\"\>", ",", "\<\"Gbarpolu\"\>", 
+   ",", "\<\"GrandCapeMount\"\>", ",", "\<\"Kailahun\"\>", 
+   ",", "\<\"Kenema\"\>", ",", "\<\"Kono\"\>", ",", "\<\"Pujehun\"\>", 
+   ",", "\<\"Bo\"\>", ",", "\<\"Bonthe\"\>", ",", "\<\"Moyamba\"\>", 
+   ",", "\<\"Koinadugu\"\>", ",", "\<\"Tonkolili\"\>", ",", "\<\"Bombali\"\>",
+    ",", "\<\"PortLoko\"\>", ",", "\<\"WesternRural\"\>", 
+   ",", "\<\"Kambia\"\>", ",", "\<\"WesternUrban\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{{3.7396311298583717`*^9, 3.739631162280994*^9}, {
+   3.739631199935587*^9, 3.739631219532658*^9}, 3.739631616471428*^9, 
+   3.7396316864598103`*^9, 3.739632188187928*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Realized accuracy", "Subsection",
+ CellChangeTimes->{{3.739630833079567*^9, 3.739630837726375*^9}}],
+
+Cell["How good was the model at predicting test data?", "Text",
+ CellChangeTimes->{{3.739631899139514*^9, 3.739631907538615*^9}}],
+
+Cell["True locations", "Text",
+ CellChangeTimes->{{3.7396309630881147`*^9, 3.739630974989616*^9}, {
+  3.739631737203917*^9, 3.739631738755486*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"trueLocs", "=", 
+  RowBox[{"data", "[", 
+   RowBox[{"[", 
+    RowBox[{"All", ",", "2"}], "]"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.739631724467022*^9, 3.7396317334855824`*^9}, {
+  3.739631778541432*^9, 3.739631781493082*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"Beyla\"\>", ",", "\<\"Nzerekore\"\>", ",", "\<\"Macenta\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Kouroussa\"\>", ",", "\<\"Coyah\"\>", 
+   ",", "\<\"Coyah\"\>", ",", "\<\"Coyah\"\>", ",", "\<\"Conakry\"\>", 
+   ",", "\<\"Conakry\"\>", ",", "\<\"Nimba\"\>", ",", "\<\"Montserrado\"\>", 
+   ",", "\<\"Montserrado\"\>", ",", "\<\"Montserrado\"\>", 
+   ",", "\<\"Montserrado\"\>", ",", "\<\"Bomi\"\>", ",", "\<\"Lofa\"\>", 
+   ",", "\<\"Lofa\"\>", ",", "\<\"Kailahun\"\>", ",", "\<\"Kailahun\"\>", 
+   ",", "\<\"Kailahun\"\>", ",", "\<\"Kailahun\"\>", ",", "\<\"Kenema\"\>", 
+   ",", "\<\"Kenema\"\>", ",", "\<\"Kenema\"\>", ",", "\<\"Kenema\"\>", 
+   ",", "\<\"Kenema\"\>", ",", "\<\"Kono\"\>", ",", "\<\"Moyamba\"\>", 
+   ",", "\<\"Koinadugu\"\>", ",", "\<\"Tonkolili\"\>", 
+   ",", "\<\"Tonkolili\"\>", ",", "\<\"Tonkolili\"\>", ",", "\<\"Bombali\"\>",
+    ",", "\<\"Bombali\"\>", ",", "\<\"Bombali\"\>", ",", "\<\"Bombali\"\>", 
+   ",", "\<\"Bombali\"\>", ",", "\<\"PortLoko\"\>", ",", "\<\"PortLoko\"\>", 
+   ",", "\<\"PortLoko\"\>", ",", "\<\"WesternRural\"\>", 
+   ",", "\<\"WesternRural\"\>", ",", "\<\"WesternRural\"\>", 
+   ",", "\<\"Kambia\"\>", ",", "\<\"Kambia\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"WesternArea\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{3.7396317339808073`*^9, 3.739631781912548*^9, 
+  3.7396321882510767`*^9}]
+}, Open  ]],
+
+Cell["Predicted locations", "Text",
+ CellChangeTimes->{{3.73963174133911*^9, 3.73963174820317*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"predLocs", "=", 
+  RowBox[{"data", "[", 
+   RowBox[{"[", 
+    RowBox[{"All", ",", "4"}], "]"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.739631724467022*^9, 3.7396317508118477`*^9}, {
+  3.7396317834868402`*^9, 3.739631784621478*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"Conakry\"\>", ",", "\<\"Macenta\"\>", ",", "\<\"Kerouane\"\>", 
+   ",", "\<\"Nzerekore\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", 
+   ",", "\<\"Gueckedou\"\>", ",", "\<\"Gueckedou\"\>", ",", "\<\"Moyamba\"\>",
+    ",", "\<\"Conakry\"\>", ",", "\<\"Conakry\"\>", 
+   ",", "\<\"WesternRural\"\>", ",", "\<\"Kenema\"\>", 
+   ",", "\<\"Montserrado\"\>", ",", "\<\"GrandBassa\"\>", 
+   ",", "\<\"Siguiri\"\>", ",", "\<\"Montserrado\"\>", 
+   ",", "\<\"Montserrado\"\>", ",", "\<\"Montserrado\"\>", 
+   ",", "\<\"Lofa\"\>", ",", "\<\"Lofa\"\>", ",", "\<\"Kailahun\"\>", 
+   ",", "\<\"Kailahun\"\>", ",", "\<\"Kailahun\"\>", ",", "\<\"Kailahun\"\>", 
+   ",", "\<\"Conakry\"\>", ",", "\<\"Kailahun\"\>", ",", "\<\"Conakry\"\>", 
+   ",", "\<\"Kailahun\"\>", ",", "\<\"Kenema\"\>", ",", "\<\"Kono\"\>", 
+   ",", "\<\"Moyamba\"\>", ",", "\<\"Koinadugu\"\>", ",", "\<\"Tonkolili\"\>",
+    ",", "\<\"PortLoko\"\>", ",", "\<\"Bombali\"\>", ",", "\<\"Bombali\"\>", 
+   ",", "\<\"Bombali\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"Bombali\"\>", 
+   ",", "\<\"PortLoko\"\>", ",", "\<\"PortLoko\"\>", ",", "\<\"PortLoko\"\>", 
+   ",", "\<\"Bombali\"\>", ",", "\<\"WesternRural\"\>", 
+   ",", "\<\"WesternRural\"\>", ",", "\<\"PortLoko\"\>", 
+   ",", "\<\"Kambia\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"PortLoko\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"PortLoko\"\>", 
+   ",", "\<\"WesternUrban\"\>", ",", "\<\"WesternUrban\"\>", 
+   ",", "\<\"Bombali\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{3.739631751272436*^9, 3.7396317850413723`*^9, 
+  3.73963218831905*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"correctPredictions", "=", 
+  RowBox[{"Count", "[", 
+   RowBox[{
+    RowBox[{"MapThread", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"#1", "\[Equal]", "#2"}], ",", "True", ",", "False"}], "]"}],
+        "&"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"trueLocs", ",", "predLocs"}], "}"}]}], "]"}], ",", "True"}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.739631771923512*^9, 3.739631845244014*^9}}],
+
+Cell[BoxData["33"], "Output",
+ CellChangeTimes->{{3.739631792236072*^9, 3.739631845833392*^9}, 
+   3.739632188386011*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"realizedAccuracy", "=", 
+  RowBox[{"N", "[", 
+   RowBox[{"correctPredictions", "/", 
+    RowBox[{"Length", "[", "data", "]"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.739631848059116*^9, 3.739631861747628*^9}}],
+
+Cell[BoxData["0.55`"], "Output",
+ CellChangeTimes->{{3.739631858475376*^9, 3.739631862017737*^9}, 
+   3.739632188451313*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Predicted accuracy", "Subsection",
+ CellChangeTimes->{{3.739631887699705*^9, 3.739631895730659*^9}}],
+
+Cell[TextData[{
+ "How good does the model ",
+ StyleBox["think",
+  FontSlant->"Italic"],
+ " it will be at predicting test data?"
+}], "Text",
+ CellChangeTimes->{{3.73963191099432*^9, 3.739631924114142*^9}}],
+
+Cell["Model confidence in calls:", "Text",
+ CellChangeTimes->{{3.7396321148402452`*^9, 3.7396321279349337`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"modelConfidence", "=", 
+  RowBox[{"Map", "[", 
+   RowBox[{"Max", ",", 
+    RowBox[{"data", "[", 
+     RowBox[{"[", 
+      RowBox[{"All", ",", 
+       RowBox[{"5", ";;", 
+        RowBox[{"-", "1"}]}]}], "]"}], "]"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.739632062365048*^9, 3.739632133999619*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "0.328141783029`", ",", "0.845327604726`", ",", "0.531149301826`", ",", 
+   "0.588077336198`", ",", "0.858754027927`", ",", "0.578947368421`", ",", 
+   "0.957035445757`", ",", "0.898496240602`", ",", "0.944683136412`", ",", 
+   "0.939312567132`", ",", "0.50537056928`", ",", "0.9425349087`", ",", 
+   "0.541890440387`", ",", "0.769065520945`", ",", "0.643931256713`", ",", 
+   "0.793233082707`", ",", "0.37432867884`", ",", "0.335123523093`", ",", 
+   "0.490870032223`", ",", "0.610633727175`", ",", "0.571428571429`", ",", 
+   "0.758861439313`", ",", "0.903329752954`", ",", "0.801288936627`", ",", 
+   "0.533834586466`", ",", "0.703544575725`", ",", "0.476906552095`", ",", 
+   "0.773899033298`", ",", "0.414070891515`", ",", "0.622448979592`", ",", 
+   "0.325993555317`", ",", "0.563909774436`", ",", "0.791084854995`", ",", 
+   "0.928034371643`", ",", "0.599892588614`", ",", "0.984962406015`", ",", 
+   "0.505907626208`", ",", "0.430182599356`", ",", "0.502148227712`", ",", 
+   "0.93179377014`", ",", "0.935553168636`", ",", "0.548335123523`", ",", 
+   "0.431256713212`", ",", "0.966165413534`", ",", "0.955424274973`", ",", 
+   "0.896348012889`", ",", "0.734693877551`", ",", "0.465628356606`", ",", 
+   "0.891514500537`", ",", "0.483888292159`", ",", "0.909237379162`", ",", 
+   "0.962943071966`", ",", "0.843179377014`", ",", "0.887755102041`", ",", 
+   "0.668635875403`", ",", "0.512889366273`", ",", "0.726638023631`", ",", 
+   "0.626745435016`", ",", "0.66380236305`", ",", "0.420515574651`"}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.739632064818075*^9, 3.7396321344094*^9}, 
+   3.739632188540945*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Mean", "[", "modelConfidence", "]"}]], "Input",
+ CellChangeTimes->{{3.739632135821713*^9, 3.739632140202076*^9}}],
+
+Cell[BoxData["0.6855263157895001`"], "Output",
+ CellChangeTimes->{3.739632140643797*^9, 3.739632188601295*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1274, 785},
+WindowMargins->{{Automatic, 53}, {17, Automatic}},
+Magnification:>1.25 Inherited,
+FrontEndVersion->"10.1 for Mac OS X x86 (32-bit, 64-bit Kernel) (March 23, \
+2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 155, 3, 183, "Title"],
+Cell[CellGroupData[{
+Cell[760, 29, 170, 3, 36, "Input"],
+Cell[933, 34, 234, 3, 36, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1204, 42, 86, 1, 80, "Section"],
+Cell[CellGroupData[{
+Cell[1315, 47, 92, 1, 54, "Subsection"],
+Cell[1410, 50, 463, 9, 36, "Input"],
+Cell[1876, 61, 197, 5, 35, "Input"],
+Cell[CellGroupData[{
+Cell[2098, 70, 334, 10, 36, "Input"],
+Cell[2435, 82, 4227, 73, 246, "Output"]
+}, Open  ]],
+Cell[6677, 158, 196, 5, 36, "Input"],
+Cell[CellGroupData[{
+Cell[6898, 167, 481, 14, 36, "Input"],
+Cell[7382, 183, 1843, 27, 120, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9274, 216, 105, 1, 54, "Subsection"],
+Cell[9382, 219, 129, 1, 37, "Text"],
+Cell[9514, 222, 147, 2, 37, "Text"],
+Cell[CellGroupData[{
+Cell[9686, 228, 255, 6, 35, "Input"],
+Cell[9944, 236, 1750, 27, 141, "Output"]
+}, Open  ]],
+Cell[11709, 266, 99, 1, 37, "Text"],
+Cell[CellGroupData[{
+Cell[11833, 271, 257, 6, 36, "Input"],
+Cell[12093, 279, 1741, 27, 141, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13871, 311, 477, 14, 36, "Input"],
+Cell[14351, 327, 121, 2, 35, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[14509, 334, 237, 5, 36, "Input"],
+Cell[14749, 341, 123, 2, 35, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[14921, 349, 106, 1, 54, "Subsection"],
+Cell[15030, 352, 204, 6, 37, "Text"],
+Cell[15237, 360, 112, 1, 37, "Text"],
+Cell[CellGroupData[{
+Cell[15374, 365, 326, 9, 36, "Input"],
+Cell[15703, 376, 1655, 25, 141, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[17395, 406, 137, 2, 35, "Input"],
+Cell[17535, 410, 110, 1, 35, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[17706, 418, 91, 1, 80, "Section"],
+Cell[CellGroupData[{
+Cell[17822, 423, 92, 1, 54, "Subsection"],
+Cell[17917, 426, 423, 9, 36, "Input"],
+Cell[18343, 437, 197, 5, 35, "Input"],
+Cell[CellGroupData[{
+Cell[18565, 446, 334, 10, 36, "Input"],
+Cell[18902, 458, 4237, 73, 267, "Output"]
+}, Open  ]],
+Cell[23154, 534, 196, 5, 36, "Input"],
+Cell[CellGroupData[{
+Cell[23375, 543, 481, 14, 36, "Input"],
+Cell[23859, 559, 1843, 27, 120, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[25751, 592, 105, 1, 54, "Subsection"],
+Cell[25859, 595, 129, 1, 37, "Text"],
+Cell[25991, 598, 147, 2, 37, "Text"],
+Cell[CellGroupData[{
+Cell[26163, 604, 255, 6, 35, "Input"],
+Cell[26421, 612, 1752, 27, 141, "Output"]
+}, Open  ]],
+Cell[28188, 642, 99, 1, 37, "Text"],
+Cell[CellGroupData[{
+Cell[28312, 647, 257, 6, 36, "Input"],
+Cell[28572, 655, 1774, 29, 141, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[30383, 689, 477, 14, 36, "Input"],
+Cell[30863, 705, 121, 2, 35, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[31021, 712, 237, 5, 36, "Input"],
+Cell[31261, 719, 124, 2, 35, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[31434, 727, 106, 1, 54, "Subsection"],
+Cell[31543, 730, 204, 6, 37, "Text"],
+Cell[31750, 738, 112, 1, 37, "Text"],
+Cell[CellGroupData[{
+Cell[31887, 743, 326, 9, 36, "Input"],
+Cell[32216, 754, 1659, 25, 141, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[33912, 784, 137, 2, 35, "Input"],
+Cell[34052, 788, 110, 1, 35, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
