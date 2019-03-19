@@ -427,7 +427,7 @@ Both analyses (genome and GP) were set to run for 500 million states, sampling  
 Due to limited computational resources many analyses did not complete the full run and so for full genomes only 136.5, 8.62, and 143.8 million states were sampled, though after combining independent chains effective sample size (ESS) values are nearly the recommended 200.
 Similarly for GP only two MCMC analyses ran their allotted 500 million with others running to 259.9, 253.9, 255.8, 261.65, and 261.5 million states.
 Unlike complete genome MCMC analyses, GP analyses exhibit relatively poor ESS values even after combining seven independent chains, indicative of bad mixing in the absence of additional data contained in complete genome sequences.
-Convergence issues and appropriate burn-in values were assessed with Tracer v.1.7 \citep{rambaut_posterior_2018}, where 50 million states from every analysis (genome and GP) was discarded as burnin.
+Convergence issues and appropriate burn-in values were assessed with Tracer v.1.7 \citep{rambaut_posterior_2018}, where 50 million states from every analysis (genome and GP) was discarded as burnin, with GP data additionally subsampled down to a quarter of the sampled states.
 
 Posterior distributions of inferred tip dates for the masked set were logged during MCMC and 95\% highest posterior density intervals were computed using a custom Python script, due to multi-peaked posterior distributions after combining independent analyses.
 Posterior distributions of trees were summarised as maximum clade credibility (MCC) trees using TreeAnnotator \citep{suchard_bayesian_2018}.
