@@ -154,20 +154,27 @@ Since sites are assumed to evolve independently, the probability of observing at
   P = 1-e^{-RLt},
 \end{equation}
 where \textit{RL} is expressed in substitutions per year (rate in substitutions per site per year multiplied by number of sites).
-Under a given evolutionary rate \textit{R}, and sequence length \textit{L}, we can rearrange the equation to quantify the mean waiting time for at least one mutation:
+Since the probability of observing at least one mutation changes depending on waiting time (and \textit{vice versa}) we instead focus on the mean waiting time until at least one mutation appears.
+The mean of an exponential distribution is $\lambda^{-1}$ where $\lambda$ in our case is \textit{RL}, such that mean waiting time $\bar{t}$ under a given evolutionary rate \textit{R}, and sequence length \textit{L} becomes
 \begin{equation}
-  t = \frac{1}{RL}
+  \bar{t} = \frac{1}{RL}
   \label{horizon}
 \end{equation}
-When the evolutionary rate \textit{R} or sequence length \textit{L} are low mean waiting times are lengthened and \textit{vice versa}.
-Since both maximum plausible evolutionary rates and genome length are largely dictated by deleterious mutation load \citep{gago_extremely_2009}, neither quantity will vary substantially for a given pathogen, though individually $R$ and $L$ can vary substantially, where for example viruses have high $R$ and low $L$ on average, and bacteria have higher $L$ but lower $R$.
+When the evolutionary rate \textit{R} or sequence length \textit{L} are low mean waiting times $\bar{t}$ are lengthened and \textit{vice versa}.
+It also suggests a worrying relationship between \textit{R}, \textit{L}, and $\bar{t}$ - a reduction in either \textit{R} or \textit{L} leads to a reciprocal reduction in $\bar{t}$, such that reducing the number of sites by 10\%, for example, requires a $\frac{1}{0.9} = 1.11(1)$-fold increase in evolutionary rate to maintain the same temporal resolution $\bar{t}$ or risk increasing the waiting time for a mutation by the same amount (\textit{i.e.} $\approx$11\%, or 0.9 of the original resolution available).
+This gets worse reciprocally, such that halving the sites requires doubling the evolutionary rate, using 10\% of the sites requires a ten-fold increase in evolutionary rate, \textit{etc}.
+
+Since both maximum plausible evolutionary rates $R$ and genome length $G$ are largely dictated by deleterious mutation load \citep{gago_extremely_2009}, neither quantity will vary substantially for a given pathogen, though individually $R$ and $G$ can vary substantially, where for example viruses have high $R$ and low $G$ on average, and bacteria have higher $G$ but lower $R$.
+Sequencing recovers some fraction $f$ of the genome length $G$ ($L=Gf$) for analyses, and sequencing complete genomes ($f=1.0; L = G$) is the best possible scenario, since sequencing any shorter region requires the evolutionary rate to increase by a factor of $\frac{1}{f}$, which even if $L = 0.4 G$ means the evolutionary rate would have to be 2.5 times faster in the remaining 0.4 of the genome to be able to record information in the form of mutations at the same speed as complete genomes.
+The message of our manuscript, at least as far as densely sampled infectious disease outbreaks go, is that the task of sequencing a complete pathogen genome will rarely be as miserable a task as analysing a fraction of one.
+
 % Because of these natural constraints there is thus a lower limit to how many mutations can be expected to occur in a given length of sequence evolving at a particular evolutionary rate.
 % We thus refer to the mean waiting time for a mutation as the temporal horizon, which reflects a theoretical temporal resolution over which mutations arise and are available for phylogenetic inference in a study system.
 
-In this study we quantify how much information relevant to phylodynamic analysis is lost when shorter genomic regions are used instead of full genomes.
+In this study we show this by quantifying how much information relevant to phylodynamic analysis is lost when shorter genomic regions are used instead of full genomes.
 By focusing our attention on a subset (600 sequences) of a well-characterised genomic sequence data (comprised of >1600 viral genomes) set derived from the West African Ebola virus epidemic of 2013-2015 \citep{dudas_virus_2017} we estimate loss in precision and accuracy of molecular clock models and phylogeographic inference methods when only the glycoprotein gene (GP), a region representing just 10\% of the viral genome, is analysed despite GP evolving at rates faster than the genomic average.
-Our methods rely on masking tip dates and locations for 60 (10\%) of the sequences in a classic training-testing split, where we re-infer these parameters as latent variables in MCMC.
-We show that this reduction in data not only leads to severe convergence issues in Markov chain Monte Carlo (MCMC) analyses by removing the constraints additional data impose on plausible parameter space but can also result in unreliable tip date and location inference.
+Our methods rely on masking tip dates and locations for 60 (10\%) of the sequences in a classic training-testing split, where we re-infer these parameters as latent variables using Markov chain Monte Carlo (MCMC).
+We show that this reduction in data not only leads to severe mixing issues in MCMC analyses by removing the constraints additional data impose on plausible parameter space without adding restrictive priors to compensate, but can also result in unreliable tip date and location inference.
 Despite achieving much better temporal resolution when using complete viral genomes we still find residual error caused by inherent randomness of mutations which is close to theoretical expectations (Eq \ref{horizon}).
 We refer to this as the temporal horizon, \textit{i.e.} a temporal resolution limit where population processes occurring at a rate faster than the rate at which mutations enter and are observed in a population will not be captured with high fidelity, even with genome sequences.
 % As such, pathogen genomes have an inherent temporal resolution limit, where processes occurring at a rate lower than the rate of evolution of a given pathogen will not be recovered reliably using currently standard phylogenetic methods.
@@ -187,7 +194,6 @@ We refer to this as the temporal horizon, \textit{i.e.} a temporal resolution li
   In temporal phylogenies branches are also coloured based on GLM-inferred ancestral locations.
   Nodes in temporal phylogenies with <0.10 posterior probability are indicated with grey X marks.
   Maximum likelihood phylogenies on the right are rooted via temporal regression in TreeTime.
-  Note that x axes between maximum likelihood phylogenies are not consistent, as GP evolves faster than the genomic average and thus has more substitutions per site.
 	}
 	\label{trees}
 \end{figure}
@@ -208,8 +214,12 @@ Genomic data, on the other hand, despite a reduction from over 1600 sequences de
 
 Unlike maximum likelihood phylogenies where branch lengths are directly proportional to the expected number of substitutions, branch lengths in temporal phylogenies are usually smoothed out by the fact that a range of dates are compatible with a given number of mutations on a branch.
 Thus even large polytomies can be resolved into a branching structure derived from the tree prior, albeit without much support for any given configuration.
-This can be seen in Figure \ref{trees}, where temporal phylogenies (left) appear to have similar degrees of resolution, yet the GP dataset (bottom) contains more nodes with less than 0.10 posterior support (marked by grey crosses).
-Similarly, there is a noticeable degree of branch clustering by country in the GP temporal phylogeny, possibly caused by proximity of locations within country, which in the absence of genetic information cannot be resolved to the same degree as with genomic data.
+%%%%
+So despite the maximum likelihood of GP exhibiting a lot of polytomies (Figure \ref{trees}) the corresponding temporal phylogeny (left) does not, though it is more star-shaped than its genome equivalent, with long external branches as well as numerous nodes with less than 0.10 posterior support (marked by grey crosses).
+%%%%
+Though the trees were too large to estimate robust tree distance statistics such as subtree prune and regraft (SPR) distances, Robinson-Foulds distances are not, and are smaller between the GP and genome maximum likelihood trees (188) than between Bayesian timetrees (1068).
+There are also noticeable differences in total tree length, and whereas it is entirely expected that the maximum likelihood tree of GP should be larger (0.08076 substitutions/site) than the genome substitution phylogeny (0.06782 subs/site) due to the former's faster rate of evolution, the tree length of time trees differ 2-fold - 80.299 years for genome versus 173.018 years for GP.
+There is also a noticeable degree of branch clustering by country in the GP temporal phylogeny, possibly caused by proximity of locations within country, which in the absence of genetic information cannot be resolved to the same degree as with genomic data.
 
 In contrast to the maximum likelihood phylogeny of GP on the right (Figure \ref{trees}) its corresponding temporal phylogeny on the left exhibits a reconstruction of the West African epidemic largely consistent with what has been established previously \citep{dudas_virus_2017}.
 This is likely to be caused by the combined effects of two sources of information.
@@ -224,8 +234,9 @@ However, a simpler continuous time Markov chain model where each individual pair
   Inferred collection dates in the masked set based on genomes (red, left) and GP sequences (blue, right).
   Each vertical line corresponds to the 95\% highest posterior density for the inferred tip date (y-axis), coloured red (genome) or blue (GP) if it falls within the true collection date (x-axis) and black otherwise.
   Dashed diagonal line indicates the 1-to-1 line.
-  A histogram of residual errors (accuracy) between mean posterior date estimate and true date for each masked tip is shown in the second row.
-  Third row shows the histogram of confidence interval widths for date estimates (precision).
+  A histogram of signed residual errors between mean posterior date estimate and true date for each masked tip is shown in the second row, with the black hatch indicating the mean.
+  A histogram of \textit{absolute} residual errors (accuracy) between mean posterior date estimate and true date for each masked tip is shown in the third row, with the black hatch indicating the mean and the higher black hatch topped with a circle corresponding to a theoretical expectation based on Eq \ref{horizon}.
+  Fourth row shows the histogram of confidence interval widths for date estimates (precision).
 	}
 	\label{dates}
 \end{figure}
@@ -238,7 +249,7 @@ In contrast, the 95\% HPDs for inferred dates in the GP dataset capture more of 
 Despite having lower coverage probability, more precise date estimates are derived from complete genomes with an average 95\% HPD width of $\approx$102 days, compared to $\approx$458 days for GP.
 Another way of thinking about where the loss of information occurs is to consider root-to-tip against tip date regressions shown in Figure \ref{rtt}, where waiting times for mutations are too long to estimate the slope of the regression reliably, as every new mutation is seen across sequences collected over a longer interval of time.
 Observed errors (Figure \ref{dates}, but also Figure \ref{TTdates} for maximum likelihood equivalent) for both datasets are very close to theoretical expectations calculated using Equation \ref{horizon}: 22 (observed) versus 20 (expected) days for Ebola virus genomes, and 106 (observed) versus 113 (expected) days for GP.
-Also note that for many tips in the GP data set independent Markov chains converged onto different dates for masked tips (\textit{i.e.} local maxima) resulting in multi-peaked posterior samples after combining independent analyses.
+Also note that for many tips in the GP data set independent Markov chains in some cases converged on, and in other cases sampled from, different distributions for masked tip dates (\textit{i.e.} local maxima) resulting in multi-peaked posterior samples after combining independent analyses.
 
 \begin{figure}[h]
  \centering
@@ -246,7 +257,7 @@ Also note that for many tips in the GP data set independent Markov chains conver
 	\caption{\textbf{Masked tip location inference from genomes (left) and GP sequences (right).}
   Horizontal bars indicate the posterior distribution of masked tip locations, coloured by country (Sierra Leone in blue, Liberia in red, Guinea in green) and location (lighter colours indicate administrative divisions lying towards west of the country).
   The correct location of each tip is outlined in white, with the smaller plot to the right showing only the posterior probability of the correct location.
-  Bars marked with an asterisk indicate cases where the correct location is within the 95\% credible set.
+  Bars marked with an open circle indicate cases where the correct location is within the 95\% credible set and solid circles indicate cases where the location with the most probability mass is also the correct location.
   Posterior distribution of probability-weighted distances between population centroids of inferred and correct locations is shown at the bottom with mean indicated by a tick mark.
 	}
 	\label{locations}
@@ -271,7 +282,7 @@ Also note that for many tips in the GP data set independent Markov chains conver
   The inferred ancestral branch location is logged at time points along the path from selected tips to the root of the tree, across the posterior distribution of trees.
   The smoothed trajectories are an indication of where and when a lineage that gave rise to a particular tip is inferred to have existed.
   Maps on the right show migration events that are inferred to have taken place, coloured by their posterior probability, with migrations with <0.05 posterior support are shown as dotted white lines.
-  All lineages trace back to Gu\'{e}ck\'{e}dou prefecture of Guinea (white outline in the map), where the original zoonotic transmission event occurred near the Guinean border with Sierra Leone and Liberia.
+  All lineages share a common ancestor in Gu\'{e}ck\'{e}dou prefecture of Guinea (white outline in the map), where the original zoonotic transmission event occurred near the Guinean border with Sierra Leone and Liberia.
   Some lineages are also descended from an early spillover event into Sierra Leone.
   }
 	\label{trace}
@@ -294,15 +305,30 @@ The mean of these distances across masked tips are 75.886 kilometres for genomes
 In addition to assessing how well tip locations can be inferred from genetic information we also looked at how well historical patterns were reconstructed from sequence data.
 To accomplish this we looked at the posterior distribution of ancestral locations of lineages that gave rise to four sequences in the data.
 The four lineages were chosen for their well-characterised histories in the broader epidemic as well as complexity of migration.
-One of these is strain `14859\_EMLK', a virus descended from the initial sweep of Ebola virus through Sierra Leone via Kailahun and Kenema districts which eventually ended up in Conakry (Guinea) from where it jumped back into Sierra Leone late in the epidemic where it was sequenced \citep{arias_rapid_2016}.
-`EM\_004422', which migrated through Kailahun district of Sierra Leone too, but then spread into Liberia from which it spilled back into Guinea via Macenta prefecture before ending up in Kissidougou (Guinea) where it was sequenced \citep{carroll_temporal_2015}.
-Similar to other lineages, `MK3462' was part of the sweep through Sierra Leone, though unlike others remained in-country, migrating to the environs of Freetown and then Bombali district where it was sequenced \citep{arias_rapid_2016}.
-`PL5294', unlike others, belonged to a lineage that was not part of the Sierra Leonean sweep and instead part of an unusual and under-sampled lineage endemic to western Guinea (``lineage A'', \citep{carroll_temporal_2015}), from where it spilled into Sierra Leone's Kambia district late in the epidemic \citep{arias_rapid_2016}.
+Note that when we describe the movements of these lineages they are referred to by the strains that would eventually descend from them, but it should in no way be interpreted as a single virus or patient moving around the region throughout the epidemic.
+Instead, all four strains share a number of common ancestors (the tree that would describe their relationships can be represented as (((`14859\_EMLK', `MK3462'),`EM\_004422'),`PL5294');) whose locations can be inferred from the geographic distribution of their relatives and descendants.
 
-The histories of these four tips are, for the most part, reconstructed from both GP sequences and genomes consistently (Figure \ref{trace}), likely as a result of additional information brought in by specifying tip dates and their collection locations.
-In addition, genomic data tend to concentrate the probability mass towards a single location at any given time, in contrast to GP sequences where several locations can be considered with non-negligible probabilities at numerous time points (Figure \ref{trace} and Figure \ref{trace_entropy}).
-What is even more apparent is that without the additional information available when using complete genomes MCMC explores a wider variety of low-probability migration paths, as indicated by maps on the right of each plot in Figure \ref{trace}.
-In the case of `EM\_004422', for example, a series of migrations through distant Conakry (western Guinea) are reconstructed with relatively high confidence from GP sequences, compared to shorter distance migrations that run through neighbouring Liberia reconstructed from genomes.
+
+Of the four representative sequenced viruses chosen, three (`14859\_EMLK', `MK3462', `EM\_004422') are descended from the viral lineage that jumped across the border from Gu\'{e}ck\'{e}dou prefecture in Guinea into Kailahun district in Sierra Leone.
+The common ancestor of two of those (`14859\_EMLK' and `MK3462') continued onto Kenema district in Sierra Leone from Kailahun district (also Sierra Leone).
+While the lineage/transmission chain that eventually gave rise to strain `14859\_EMLK' continued onto Conakry prefecture in Guinea and back-spilled into Sierra Leone's Kambia district (where the descendent strain `14859\_EMLK' was collected \citep{arias_rapid_2016}) right across the border later in the epidemic, the lineage/transmission chain that was ancestral to `MK3462' stayed in Sierra Leone for the remainder of the epidemic, found itself moved westwards towards Freetown (Western Urban and Western Rural districts) and finally jumping to Bombali district, where its descendent strain was collected from a patient \citep{arias_rapid_2016}.
+Unlike all the other three lineages, the transmission chain/lineage (``lineage A'' \citep{carroll_temporal_2015}) that would leave strain `PL5294' as a descendent is thought to have been largely restricted to the environs of Conakry prefecture in Guinea.
+An older ancestor of strain `PL5294' had migrated from Gu\'{e}ck\'{e}dou prefecture into Conakry prefecture on the other side of the country relatively early in the epidemic, where its descendents circulated for a large portion of the West African epidemic, though unlike a lot of its relatives the direct ancestor that would eventually give rise to strain `PL5294' spilled over into Kambia district of Sierra Leone \citep{arias_rapid_2016}.
+Finally, the transmission chain/lineage that would eventually give rise to strain `EM\_004422' had a tumultous history in the region.
+Strains `EM\_004422', `14859\_EMLK' and `MK3462' all shared the same common ancestor in Kailahun district of Sierra Leone, but the progenitor of strain `EM\_004422', unlike its relatives, made a jump to Liberia (Lofa and Montserrado counties), from where \textit{its} descendants spilled back into Macenta prefecture in Guinea.
+This transmission chain would later leave descendants (of which `EM\_004422' is representative) that jumped to neighbouring Kissidougou prefecture (also Guinea) and where strain `EM\_004422' was collected \citep{carroll_temporal_2015}.
+
+
+
+% One of these is strain `14859\_EMLK', a virus descended from the initial sweep of Ebola virus through Sierra Leone via Kailahun and Kenema districts which eventually ended up in Conakry (Guinea) from where it jumped back into Sierra Leone late in the epidemic where it was sequenced \citep{arias_rapid_2016}.
+% `EM\_004422', which migrated through Kailahun district of Sierra Leone too, but then spread into Liberia from which it spilled back into Guinea via Macenta prefecture before ending up in Kissidougou (Guinea) where it was sequenced \citep{carroll_temporal_2015}.
+% Similar to other lineages, `MK3462' was part of the sweep through Sierra Leone, though unlike others remained in-country, migrating to the environs of Freetown and then Bombali district where it was sequenced \citep{arias_rapid_2016}.
+% `PL5294', unlike others, belonged to a lineage that was not part of the Sierra Leonean sweep and instead part of an unusual and under-sampled lineage endemic to western Guinea (``lineage A'', \citep{carroll_temporal_2015}), from where it spilled into Sierra Leone's Kambia district late in the epidemic \citep{arias_rapid_2016}.
+
+The histories of the lineages that gave rise to these four tips are, for the most part, reconstructed from both GP sequences and genomes consistently (Figure \ref{trace}), likely as a result of additional information brought in by specifying tip dates and their collection locations.
+Genomic data tend to concentrate the probability mass towards a single location at any given time, in contrast to GP sequences where several locations can be considered with non-negligible probabilities at numerous time points (Figure \ref{trace} and Figure \ref{trace_entropy}) and where timing of ancestral migration events is considerably more diffuse or even substantially off (\textit{i.e.} Figure \ref{trace}A and D).
+What is even more apparent is that without the additional information available when using complete genomes and without aiding the sampling with strongly informative priors MCMC explores a wider variety of low-probability migration paths, as indicated by maps on the right of each plot in Figure \ref{trace}.
+In the case of the ancestral lineage of `EM\_004422', for example, a series of migrations through distant Conakry (western Guinea) are reconstructed with relatively high confidence from GP sequences, compared to shorter distance migrations that run through neighbouring Liberia reconstructed from genomes.
 
 \begin{figure}[ht]
  \centering
@@ -332,13 +358,13 @@ The differences between genomic and GP data, though seemingly small (\textit{e.g
 	\caption{\textbf{Mean waiting times for a mutation as a function of alignment length and evolutionary rate.}
   Contours correspond to mean waiting times under a given combination of alignment length and evolutionary rate.
   Genomes and barcode genes for a variety of viruses are shown with reported evolutionary rate confidence intervals (vertical lines), including analyses of Ebola virus genomes (red violin) and GP sequences (blue violin) reported here.
-  Most genomes occupy parameter space implying temporal resolution of a mutation once every month or so, with mumps virus as an exception.
+  Most genomes occupy parameter space implying temporal resolution of a mutation once every month or so.
   Sub-genomic fragments on the other hand are expected to have mean mutation waiting times of more than a month.
 	}
 	\label{contours}
 \end{figure}
 
-As discussed in the introduction, the mean waiting for a mutation is 1/\textit{RL} (Equation \ref{horizon}) and depends on the rate at which mutations arise and are sampled by sequencing (evolutionary rate, \textit{R}) and number of sites under observation (alignment length, \textit{L}).
+As discussed in the introduction, the mean waiting time for a mutation is 1/\textit{RL} (Equation \ref{horizon}) and depends on the rate at which mutations arise and are sampled by sequencing (evolutionary rate, \textit{R}) and number of sites under observation (alignment length, \textit{L}).
 Since 1/\textit{RL} defines a linear relationship between rate \textit{R} and length \textit{L} mean waiting times for mutation can be reduced by an increase in either \textit{R} or \textit{L}.
 In order to double temporal resolution one can either double the evolutionary rate \textit{R} or double the alignment length \textit{L}.
 The former is generally outside the researchers' control, though genomic regions evolving at a faster rate exist in many pathogens.
@@ -348,7 +374,7 @@ Extending the region that is sequenced, on the other hand, is often trivial outs
 
 To help researchers intuit the impact of sequence length and evolutionary rate on temporal resolution we show the relationship between evolutionary rate and alignment length in determining mean waiting times until a mutation is observed in Figure \ref{contours}.
 In addition to theoretical expectations we also show where a variety of viral pathogens fall along the two axes - estimated evolutionary rates with uncertainty intervals on the y-axis and alignment length on the x-axis.
-Sub-genomic alignments shown in Figure \ref{contours} include the small hydrophobic (SH) gene of mumps virus \citep{cui_evolutionary_2017} and glycoprotein (GP) sequences of Ebola virus analysed in this study, as well as sequences of two human influenza A viruses - genome of subtype H1N1/09 \citep{hedge_real-time_2013}, and haemagglutinin sequences of subtypes H1N1/09 \citep{smith_origins_2009} and H3N2 \citep{rambaut_genomic_2008}.
+Sub-genomic alignments shown in Figure \ref{contours} include the small hydrophobic (SH) gene of mumps virus \citep{cui_evolutionary_2017} and glycoprotein (GP) sequences of Ebola virus analysed in this study, as well as sequences of two human influenza A viruses: genome of subtype H1N1/09 \citep{hedge_real-time_2013}, and haemagglutinin sequences of subtypes H1N1/09 \citep{smith_origins_2009} and H3N2 \citep{rambaut_genomic_2008}, as well as sequences of two commonly studied blood-borne pathogens: \textit{pol}, \textit{env}, and coding regions of HIV-1M \citep{patino-galindo_substitution_2017} and NS5B region of hepatitis C virus \citep{magiorkinis_global_2009}.
 With respect to temporal resolution influenza A virus HAs are expected to acquire a mutation every one to two months on average, compared to around three to six months for Ebola virus GP and over a year for mumps virus SH.
 Though all of these sequences are from (-)ssRNA viruses, SH and GP genes are part of a single non-recombining RNA genome \citep{chare_phylogenetic_2003}, whereas HA genes of influenza A viruses are encoded on their own segment which can be unlinked from their genomic background via reassortment.
 Because Ebola and mumps virus genomes do not recombine, their polymerases may have been selected for higher fidelity due to Hill-Robertson effect \citep{hill_effect_1966}.
@@ -363,7 +389,7 @@ The exact relationship between mutation waiting times and rates of processes wil
 \section*{Conclusions}
 \subsubsection*{Theoretical considerations}
 For studies focused on temporal dynamics of pathogens over shorter periods of time the waiting time for a mutation should ideally be smaller than the inverse of the rate at which a process of interest occurs.
-Serial interval is often of most interest usually and has been addressed previously \citep{campbell_when_2018,grubaugh_tracking_2019}, but migration or cross-species transmission rates could also exceed the critical temporal resolution threshold if sequences are assigned to compartments that are too small.
+Serial interval is often of most interest usually and has been addressed previously \citep{campbell_when_2018,grubaugh_tracking_2019}, but migration or cross-species transmission rates could also exceed the critical temporal resolution threshold if sequences are assigned to compartments that are too small, \textit{i.e.} the granularity of the analysis is increased by using a larger state space in the model.
 It is likely that this resolution limit will be improved greatly in the future by including additional information, either some aspects of a known transmission tree or, more likely, pathogen variation at the within-individual level, where variant sharing between two or more individuals is evidence of their linkage in a transmission cluster.
 Much like evolutionary rates, these methods might encounter biological limits outside of researchers' control, however.
 
@@ -377,7 +403,7 @@ Ideally, in the future sequence length and elapsed time will be included next to
 There is an additional Bayesian phylogenetic argument to be made in favour of using complete genomes.
 Molecular clock phylogenetics often relies on Markov chain Monte Carlo sampling to approximate the posterior distribution of phylogenetic trees \citep{yang_bayesian_1997}.
 Sequences which fall into polytomies in substitution phylogenies (\textit{i.e.} well-defined common ancestry, but no indication of exact branching order) are particularly problematic, since plausible temporal phylogenies can be reconstructed in the absence of mutations.
-The branching order of such clades in time trees will be determined via tree and molecular clock rate priors, since no information about branching order can be recovered from the sequences themselves.
+The branching order of such clades in time trees will be determined via the tree prior, since no information about branching order can be recovered from the sequences themselves.
 There are over 34 million possible rooted trees for a set of 10 sequences, but many of these might not be visited during MCMC if, for example, sequences are collected over time and effective population size ($N_{e}$) is low.
 Nonetheless, MCMC is particularly inefficient at sampling tree topologies for identical sequences \citep{whidden_quantifying_2015}, since increasing the number of identical sequences leads to expansion of search space without adding additional information that could constrain the search.
 Until reliable methods are developed and standardised the current solution is to reduce the numbers of identical sequences going into temporal MCMC analyses.
@@ -398,8 +424,20 @@ What remains problematic is determining and standardising additional data pertai
 Whilst date and location of collection are widely reported and often of most interest, non-standard encodings of both are seen on public databases.
 
 \subsubsection*{Stating the obvious}
-It is not at all surprising that reducing the number of alignment columns by 10\% from nearly 19,000 nucleotides that comprise the entire Ebola virus genome down to around 2,000 nt of the GP gene can result in loss of information, even if this shorter region evolves at a markedly faster rate.
-Here, we have quantified this loss of information via several methods: raw phylogenetic resolution (Fig \ref{trees}), molecular clock signal (Fig \ref{dates}), and aspects of migration model (Figs \ref{locations}, \ref{trace}, and \ref{glm}).
+%%% Added for reviewer 1:1.1.
+
+As phylodynamic approaches are increasingly being applied to non-viral organisms, it is important to set a good example of best data generation and analysis strategies.
+Sequencing complete bacterial genomes should lead to temporal resolution values comparable to those of viruses.
+For example, \textit{Enterococcus faecium}, evolving at a reported genomic evolutionary rate of $9.35 \times 10^{-6}$ substitutions per site per year \citep{duchene_genome-scale_2016} and with a genome length of around 3.2Mb is expected to experience at least one mutation in its genome every $\frac{1}{9.35 \times 10^{-6} \times 3.2 \times 10^{6}} \times 365 days = 12.2$ days.
+These values are 4.41 years for \textit{Mycobacterium tuberculosis} (evolutionary rate $5.67 \times 10^{-8}$ subs/site/year \citep{duchene_genome-scale_2016} and a genome 4Mbp long) and 53.6 days for \textit{Staphylococcus aureus} (evolutionary rate $2.43 \times 10^{-6}$ subs/site/year \citep{duchene_genome-scale_2016} and a genome 2.8Mbp long), though care should be taken with evolutionary rate estimates, as these are often reported per variable sites, instead of genomic sites.
+Recombination is also a common, though not universal concern when it comes to bacterial phylodynamics.
+
+We have shown that a relatively simple model of sequence differentiation (Eq \ref{horizon}) exhibits good correspondence with empirical results (Fig \ref{dates}) and can be used as a back-of-the-envelope calculation to gauge the power of a phylodynamic analysis.
+The relationship defined by Eq \ref{horizon} also describes a serious drawback of using partial genomes, namely that maintaining the same temporal resolution with decreasing fractions of the total sites available in a genome requires the remaining sites to evolve at increasingly unrealistic rates.
+This relationship is reciprocal such that for a 90\% reduction in alignment length a 10-fold increase in evolutionary rate is required to achieve the same temporal resolution when compared to a complete genome.
+%%%%
+It is not at all surprising then, that reducing the number of alignment columns by nearly 90\% from $\approx$19,000 nucleotides that comprise the entire Ebola virus genome down to around 2,000 nt of the GP gene results in severe loss of information, even if this shorter region evolves at a faster rate.
+Here, we have quantified this loss of information via several methods: raw phylogenetic resolution (Fig \ref{trees}), molecular clock signal (Fig \ref{dates}), and aspects of migration model (Figs \ref{locations}, \ref{trace}, and \ref{glm}), which are summarised in Fig \ref{summary}.
 
 In most cases biological aspects of the data, such as precise branching order and molecular clock resolution, suffer from severe loss in temporal resolution (Figure \ref{dates}), whereas modelling of non-biological aspects of the data, \textit{i.e.} migration, tend to be more robust (Figures \ref{locations} and \ref{glm}).
 This is very likely to be caused by temporal and geographic, rather than genetic features of the sequence data \citep{boskova_influence_2018}.
@@ -413,7 +451,7 @@ The overall conclusion from our study, as well as others \citep{wohl_co-circulat
 A publicly available dataset of 1610 Ebola virus genomes sequenced by various groups \citep{baize_emergence_2014,gire_genomic_2014,park_ebola_2015,carroll_temporal_2015,kugelman_monitoring_2015,ladner_evolution_2015,simon-loriere_distinct_2015,tong_genetic_2015,arias_rapid_2016,smits_genotypic_2015,quick_rapid_2015} and systematised in \cite{dudas_virus_2017} was filtered to remove sequences where over 1\% of the genome sequence was ambiguous or the precise location down to administrative division was not available, leaving 943 genomes.
 A set of 600 viral genomes were randomly sampled from the filtered dataset of 943 high quality genomes.
 Of the 600 genomes that were chosen for analysis 10\% (60 genomes) were chosen for masking, where for all subsequent analyses both the date and location were considered as unknown and inferred as latent variables.
-Date inference was constrained to the period 2013 December 01 to 2015 December 01, corresponding roughly to the presumed beginning of the epidemic in late 2013 and its end in autumn of 2015.
+Date inference was constrained via a uniform prior bounded by 2013 December 01 and 2015 December 01, corresponding roughly to the presumed beginning of the epidemic in late 2013 and its end in autumn of 2015.
 Another dataset was generated by extracting the glycoprotein GP coding sequence (with padding inserted into the polymerase slippage site to bring it in-frame) from the complete genomes dataset, resulting in an alignment 2031 nucleotides long.
 
 \subsubsection*{Bayesian analyses}
@@ -424,12 +462,28 @@ A relaxed molecular clock \citep{drummond_2006} with an uninformative prior on t
 A flexible skygrid tree prior \citep{gill_2013} was used to infer estimates of effective population size across 100 evenly spaced points in time starting 1.5 years prior to the collection of the most recent sequence to the date of the most recent sequence.
 
 Both analyses (genome and GP) were set to run for 500 million states, sampling  every 50,000 states and run three (genome) or seven (GP) times independently.
-Due to limited computational resources many analyses did not complete the full run and so for full genomes only 136.5, 8.62, and 143.8 million states were sampled, though after combining independent chains effective sample size (ESS) values are nearly the recommended 200.
+Due to limited computational resources many analyses did not complete the full run and so for full genomes only 136.5, 86.2, and 143.8 million states were sampled, though after combining independent chains effective sample size (ESS) values are nearly the recommended 200.
+%%%%
+With the worst ESS values being prior (78) and precision (87) of GLM random effects, tree height (123), and prior (192), though largely as a result of bad mixing rather than convergence to different posteriors.
+Inference of masked tip dates often had poor ESSs as well, mostly because of bad mixing and one example where all three chains independently sampled from two posterior distributions.
+%%%%
+
 Similarly for GP only two MCMC analyses ran their allotted 500 million with others running to 259.9, 253.9, 255.8, 261.65, and 261.5 million states.
-Unlike complete genome MCMC analyses, GP analyses exhibit relatively poor ESS values even after combining seven independent chains, indicative of bad mixing in the absence of additional data contained in complete genome sequences.
-Convergence issues and appropriate burn-in values were assessed with Tracer v.1.7 \citep{rambaut_posterior_2018}, where 50 million states from every analysis (genome and GP) was discarded as burnin, with GP data additionally subsampled down to a quarter of the sampled states.
+%%%%
+Unlike complete genome MCMC analyses, GP analyses exhibit relatively poor ESS values even after combining seven independent chains, indicative of bad mixing in the absence of additional data contained in complete genome sequences and uninformative priors.
+Poor ESS values amongst re-inferred tip dates are even more prevalent when using GP data and are primarily caused by both convergence of independent chains onto different stationary distributions and individual chains sampling distinct distributions.
+Worst ESSs for other parameters were: likelihoods for the three codon positions (48, 31, and 48 for positions 1, 2 and 3, respectively), overall likelihood (60), joint/posterior (98), coefficient of variation (104), standard deviation of lognormal distribution from which branch rates are drawn (107), alpha parameter of gamma distribution used to model rate heterogeneity across second codon positions (155), tree prior (166), overall prior (177), and effective population size estimate at the earliest grid point (190).
+%%%%
+
+Convergence, mixing and appropriate burn-in values were assessed with Tracer v.1.7 \citep{rambaut_posterior_2018}, where 50 million states from every analysis (genome and GP) was discarded as burnin, with GP data additionally subsampled down to a quarter of the sampled states.
+%%%%
+Log files of analyses are available on GitHub at \url{https://github.com/blab/genomic-horizon/genomic-horizon/data/xml/logs.zip} and traces for posterior, prior and their product (called posterior) probabilities are shown in Fig \ref{mcmc}.
+%%%%
 
 Posterior distributions of inferred tip dates for the masked set were logged during MCMC and 95\% highest posterior density intervals were computed using a custom Python script, due to multi-peaked posterior distributions after combining independent analyses.
+%%%%
+Briefly, the script takes a kernel density estimate of posterior samples and computes the integral of the peaks intersected by a horizontal line that is lowered until the integral of the peaks intersected encompasses 0.95 of the area.
+%%%%
 Posterior distributions of trees were summarised as maximum clade credibility (MCC) trees using TreeAnnotator \citep{suchard_bayesian_2018}.
 Inferred posterior probabilities of masked tip locations were recovered from MCC trees.
 Ancestral location probabilities were recovered via a modified version of baltic's samogitia.py (\url{https://github.com/evogytis/baltic/blob/master/samogitia.py}) across 200 equally spaced time points between mid-2013 and beginning of 2016.
@@ -440,13 +494,13 @@ Trees were rooted in TreeTime according to best r$^{2}$ value for root-to-tip ag
 A temporal phylogeny with marginal reconstruction of most likely dates for masked tips was carried out in TreeTime \citep{sagulenko_treetime:_2018} as well.
 Ancestral sequences at internal nodes of the clock-rooted RAxML topology were inferred using TreeTime under an HKY model \citep{hky_1985} of evolution.
 Ancestral location states were inferred in TreeTime using a continuous time Markov chain model identical to the one used by \cite{lemey_bayesian_2009} without the Bayesian stochastic search variable selection.
-We also repeated many of the analyses under a maximum likelihood model in TreeTime \citep{sagulenko_treetime:_2018}, like inference of masked tip dates (figure \ref{TTdates}) and locations (figure \ref{TTlocations}).
+We also repeated many of the analyses under a maximum likelihood model in TreeTime \citep{sagulenko_treetime:_2018}, like inference of masked tip dates (Figure \ref{TTdates}) and locations (Figure \ref{TTlocations}).
 
 
 \subsubsection*{Error computation}
 For figure \ref{dates} mean absolute errors were computed as
 \begin{equation}
-    \epsilon = \frac{1}{N} (\sum_{i=1}^{N} (t_{i} - \sum_{m=1}^{M} e_{i}))
+    \epsilon = \frac{1}{N} (\sum_{i=1}^{N} (| t_{i} - \frac{1}{M} \sum_{m=1}^{M} e_{i}|))
     % \eta = mean across tips (true date - posterior mean)
 \end{equation}
 
@@ -477,9 +531,10 @@ where N is the number of masked tips, $q_{i}$ is the probability of the true loc
 Sequence data and all analytical code is publicly available at \url{https://github.com/blab/genomic-horizon}.
 
 \section*{Acknowledgements}
-We would like to thank Andrew Rambaut for useful discussion and advice.
+We would like to thank Andrew Rambaut for useful discussion and advice and two anonymous reviewers for their input.
 GD is supported by the Mahan postdoctoral fellowship from the Fred Hutchinson Cancer Research Center.
 TB is a Pew Biomedical Scholar and is supported by NIH R35 GM119774-01.
+The authors declare that there is no conflict of interest.
 
 \bibliographystyle{mbe}
 \bibliography{genomic-horizon}
@@ -572,6 +627,31 @@ TB is a Pew Biomedical Scholar and is supported by NIH R35 GM119774-01.
   Red and blue bars at the end of the plot indicate relative cumulative entropies of genome and GP sequence reconstructions, respectively.
   }
 	\label{trace_entropy}
+\end{figure}
+
+\begin{figure}[h]
+ \centering
+	\includegraphics[width=0.75\textwidth]{supp_figures/sfigX_summary.png}
+	\caption{\textbf{Summary of statistics reported in this study.}
+  Each cell shows the difference between genome (red, bottom of cell) and GP (blue, top of cell) data for various statistics reported in this study.
+  Descriptions for each statistic are given at the bottom of the cell near the x-axis.
+	}
+	\label{summary}
+\end{figure}
+
+\begin{figure}[h]
+ \centering
+  \subfloat{
+  \includegraphics[width=0.65\textwidth]{supp_figures/sfigX_genome_mcmc.png}
+  }\\
+  \subfloat{
+  \includegraphics[width=0.65\textwidth]{supp_figures/sfigX_gp_mcmc.png}
+  }
+  \\
+  \caption{\textbf{MCMC traces of prior, likelihood and joint (referred to as posterior) probabilities.}
+  Post-burnin MCMC samples of prior, likelihood and joint probabilities for genome data (total of three chains, top) and GP data (total of seven chains, bottom) with kernel density estimates of each chain displayed on the right.
+  }
+	\label{mcmc}
 \end{figure}
 
 \end{document}

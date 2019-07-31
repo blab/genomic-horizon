@@ -1,0 +1,200 @@
+\documentclass[11pt,oneside,letterpaper]{article}
+
+% graphicx package, useful for including eps and pdf graphics
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+
+% basic packages
+\usepackage{color}
+\usepackage{parskip}
+\usepackage{float}
+\usepackage{hyperref}
+
+% text layout
+\usepackage{geometry}
+\geometry{textwidth=15.25cm} % 15.25cm for single-space, 16.25cm for double-space
+\geometry{textheight=22cm} % 22cm for single-space, 22.5cm for double-space
+
+% helps to keep figures from being orphaned on a page by themselves
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+
+% bold the 'Figure #' in the caption and separate it with a period
+% Captions will be left justified
+\usepackage[labelfont=bf,labelsep=period,font=small]{caption}
+
+% review layout with double-spacing
+%\usepackage{setspace}
+%\doublespacing
+%\captionsetup{labelfont=bf,labelsep=period,font=doublespacing}
+
+% cite package, to clean up citations in the main text. Do not remove.
+\usepackage{cite}
+%\renewcommand\citeleft{(}
+%\renewcommand\citeright{)}
+%\renewcommand\citeform[1]{\textsl{#1}}
+
+% Remove brackets from numbering in list of References
+\renewcommand\refname{\large References}
+\makeatletter
+\renewcommand{\@biblabel}[1]{\quad#1.}
+\makeatother
+
+\usepackage{authblk}
+\renewcommand\Authands{ \& }
+\renewcommand\Authfont{\normalsize \bf}
+\renewcommand\Affilfont{\small \normalfont}
+\makeatletter
+\renewcommand\AB@affilsepx{, \protect\Affilfont}
+\makeatother
+
+% notation
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+
+\begin{document}
+
+\newgeometry{top=4cm}
+
+Dear BMC Evolutionary Biology editorial board,
+
+Please find attached our extensively revised manuscript entitled ``The ability of single genes vs full genomes to resolve time and space in outbreak analysis''.  This is a resubmission of manuscript number EVOB-D-19-00143. The editorial assessment stated that:
+
+\begin{quote}
+Thank you very much for submitting this interesting piece of research.
+I agree with the reviewers on the interest and importance of the subject, and I think the manuscript will be a neat contribution to the field.
+Notwithstanding, I share also some of the reviewers' concerns especially about the significance of the lack of convergence of the Bayesian calculations and about the origin and meaning of the mismatch between Bayesian inference and Maximum Likelihood-based approaches.
+I consider that all modifications required prior to publication are minor.
+I will be very happy to read the revised version.
+\end{quote}
+
+Thank you for considering the manuscript for publication. We have read the reviewers' comments and found them to be useful for improving it.
+
+Point-by-point responses to the reviews are attached.
+
+Sincerely,\\
+Gytis Dudas
+
+\restoregeometry
+
+\newpage
+
+\section*{Reviewer responses}
+
+Original reviewer criticisms are in plain text.  Our responses follow in \textbf{bold}.
+
+%%% REVIEWER 1 %%%
+\section*{Reviewer 1}
+1.1. ``I find it a little disconcerting that the authors couldn't get their MCMC chains to complete. Does BEAST 1.8 not allow you to restart chains that have crashed? It weakens the authors' argument to on the one hand argue for more data and on the other state that they did not have sufficient computational resources to analyse their dataset. (Why get more data if you can't analyse it?)''
+
+\textbf{The feature to restart chains is so far only available in BEAST 2, which is a largely unrelated framework to BEAST 1. While we agree that the deluge of sequence data is an issue, particularly for phylogenetics, it is a topic for groups working on overhauling phylogenetic inference, and only relevant for our manuscript when we talk about combining data across studies which we presume take place over longer time periods than sequence sampling. As reviewer 2 pointed out, in Bayesian methodology lack of data shifts the posterior towards the prior and our data, if anything, show how using more data in the form of sites substantially improves mixing due to non-additive improvements in temporal resolution as a result of adding extra sites.}
+
+1.2. ``In addition, chain 2 of the genome analysis never passed the burn-in, begging the question of why it is even reported at all (since no single sample from this chain is used in the analysis). Based on the sampling frequency you also only have about 3000 posterior samples for the genome analysis. This could be sufficient, but an extra couple of thousand would probably help to push the ESS above 200.''
+
+\textbf{We have made an error in reporting the number of states chain 2 ran for - it actually ran for 86.2 million states and this has been corrected in the manuscript. As far as getting ESSs above 200 goes, the main obstacle was and is run time available, particularly for GP sequences. Initially we tried running all 1610 sequences for both genome and GP, which turned out to mix very badly within the allotted time and only then did we decide to cut the data down to 600 sequences. We have included Figure S9 that shows the traces for prior, likelihood and joint probabilities, and have uploaded the log files to GitHub and point them out in Methods, so readers can look up the quality of the analyses themselves. Ultimately, ESSs over exactly 200 are exceedingly difficult to achieve with increasingly complex models, and in our case are mostly due to inefficient MCMC proposals (mixing) rather than non-convergence. We would also like to point out that 200 is an arbitrarily chosen cutoff and chasing that number, particularly with large datasets and lack of information, is impractical and largely cosmetic.}
+
+2.1. ``Related to the previous point, I find it troubling that the MCMC chains apparently did not converge. I am not saying that the analyses are invalid, but with what is written in the manuscript I have to conclude that chains did not mix and that convergence was not reached. Please give some clarification about which parameters did not mix. I wouldn't expect the tip-dates to mix, but I would expect all of the other parameters to. If parameters are not mixing this is either because analyses were not run long enough (and should be run longer), operators are not making good proposals (and should be tweaked/changed) or because the model is not identifiable (see Bruce Rannala's 2002 paper about identifiability in Systematic Biology).''
+
+\textbf{We apologise for very imprecise language in the manuscript. Indeed, the issues of convergence only affect tip date inference, whereas other parameters suffer from bad mixing. We have clarified this throughout the manuscript.}
+
+2.2. ``I note that this is especially worrying to me because the lead author published a paper analysing the full 1,610 EBOV sequence dataset under roughly the same model (the difference here is that some tip-dates and -locations are unknown). I couldn't find any notes/statistics about convergence in that paper, and without further explanation the results reported here calls into question the results of the previous paper. (Clarify if the non-convergence here is due to differences in the model used or if the original analysis also did not converge).''
+
+\textbf{Not mentioning convergence/mixing in the previous paper was an error on our part and we apologise for that. There were a number of factors which helped mixing in our previous paper, such as full information (\textit{i.e.} 10\% of data are not missing), having more collection dates to restrict parameter space, and better hardware to run analyses within reasonable time. Even then some parameters (likelihood for intergenic regions and random effects) had ESSs above 100 but below 200 with likelihood for first codon position having the worst ESS at 43. For that particular paper we have run numerous models with the same data over the course of the study and the mixing issues had always been there. Having said that we never saw any results that would affect our conclusions.}
+
+3. ``How did you compute the HPDs for multi-peaked posterior distributions? It is mentioned that a custom Python script was used, but not what this script actually does. It sounds like the posteriors are multi-peaked because you combined chains that converged to different peaks, not because all chains were mixing across all of the different peaks, so the authors' strategy here needs to be explained in more detail.''
+
+\textbf{The posteriors for tip dates had examples of both chains sampling from two to three distributions independently and chains where each run converged onto one of two or three distributions. We now explain this in the text and provide a description for how the disjoint posteriors were computed.}
+
+4. ``Equation 3 is not the mean absolute error. It is the mean signed deviation. It would actually be useful to also report the mean signed deviation, since this would give some indication of the direction of the bias in estimates. (Fig. 2 does show the bias of the mean posterior estimates, but I couldn't find any mention of it in the text).''
+
+\textbf{Thank you for spotting the error. There was in fact another mistake because we estimated the errors against posterior means too. This has been fixed and we now mention both absolute and signed errors in the text.}
+
+5. ``The discussion about the 4 viral lineages examined in the phylogeography section is problematic. It makes it sound as if those 4 individual viruses migrated from place to place (e.g. "'EM 004422', which migrated through Kailahun district of Sierra Leone too, but then spread into Liberia from which it spilled back into Guinea via Macenta prefec- ture before ending up in Kissidougou..."). This is misleading and not an accurate description of the true dynamics. It can also be misinterpreted as being able to infer the movements of a specific patient from viral sequence data. This may seem like a minor semantic issue, but I think it's really  important to get these descriptions right. It should probably also be pointed out that those viral lineage movements were reconstructed using a very similar model to the one used here.''
+
+\textbf{We see how this could be misleading and have rewritten the entire section explicit, as well as including a note for readers.}
+
+6. ``I disagree with the statement that the temporal phylogenies in Fig. 1 appear to have the same temporal resolution. The GP phylogeny is a lot more star-like with much longer terminal branches. It's not necessary for the main message in this manuscript, but it would also be nice to see some statistics about the differences in the tree topologies, branch lengths and branch locations (e.g. Robinson-Foulds, or scatterplots of posterior tree samples in tree space).''
+
+\textbf{Due to time constraints imposed by the editorial office we do not have sufficient time to delve into this to a depth we would like. We have tried running rspr to compute SPR distances between trees, but it would not complete fast enough even when running in approximation mode. We have therefore reported RF distances, as well as tree lengths for all analyses in the text. Ideally it would be nice to see something like an SPR distance network for each dataset and compare them.}
+
+7. ``Why are the x-axes on the right hand side of Fig. 1 not consistent? Making them consistent would make it possible to actually compare the genome and GP genetic distance trees (as is already possible with the two time trees). This is actually shown in Fig. S3, but not pointed out.''
+
+\textbf{This was a topic of debate amongst authors initially. We have made the axes consistent now.}
+
+8. ``Showing the histograms of mean absolute error along with the theoretical expectation for Fig. 2 (and S4) would be really useful. The theoretical expectation could also be shown on the second row of Fig. 2, which shows the residual error of the mean posterior estimates.''
+
+\textbf{Thank you for the suggestion. We have added the extra panels to Figs. 2 and S4 along with the theoretical expectations.}
+
+9. ``Without an x-axis or grid lines of some sort the right-hand panels in Fig. 3 are not informative. At present only tips where the 95\% HPD contains the true location are highlighted. Why not also show those tips where the most probable inferred location is the true location? (as that is the metric actually used in the comparison).''
+
+\textbf{Agreed, apologies for that. We have altered Fig. 3 to encode information both about the 95\% most probable set and whether the best model guess is the truth in a seamless way. We have also added grid lines every 0.2 to the right-hand panels.}
+
+10. ``Isn't it possible to summarise all of the statistics computed on the estimated tip-dates and -locations in a table or boxplots?''
+
+\textbf{We have included an extra supplementary figure that depicts all of the major statistics reported in the manuscript.}
+
+11. ``It is worth pointing out that although the broad patterns in Fig. 4 appear similar, some locations receive only a very low probability for GP alone and the timing of the migrations can shift quite a bit (e.g. Conakry in Fig. 4A and D).''
+
+\textbf{Agreed, we have included this in the text.}
+
+12. ``HIV-1 is conspiciously absent from Fig. 6. As is pointed out in the introduction it is still very common to only sequence the part of pol with resistance mutations. Older studies tended to sequence only env or gag and full-length HIV genomes still make up only a small amount of the sequences in public databases. The same is true for HCV, where the core/E1 and NS5B genes are commonly sequenced, but only the full genome is shown in Fig. 6.''
+
+\textbf{Yes, thank you. This is entirely an oversight on our part, because HIV was meant to be included from the start. We have now included pol, env and coding regions of HIV and NS5B region of HCV into the figure. We have refrained from adding any more on account of the plot already getting a bit crowded.}
+
+13. ``There has been a fair amount of interest in doing phylodynamics with bacterial genomes, especially tuberculosis, and the argument is often made that because the genomes are so much longer it is not necessary to only look at very long timescales. I did a quick back-of-the-envelope calculation and got ~3.5 years for the temporal horizon of TB (I may have made a mistake, and I considered the genome length, not just variable sites). This obviously won't fit into the figure, but it would be nice to have a note about the temporal horizon for bacterial genomes in the text.''
+
+\textbf{We agree that bacteria have joined the ranks of measurably evolving populations thanks to genomics. The estimated temporal horizon for TB the reviewer has calculated is approximately correct - quickly googling for parameters of interest (genome length = 4.4Mb, evolutionary rate = $1\times10^{-7}$) it's 2.27 years (1/(genome length * evolutionary rate)). We have included a section in the discussion that mentions a couple of bacterial examples.}
+
+14. ``Page 6, second last line: waiting $->$ waiting time.''
+
+\textbf{Fixed this, thank you.}
+
+15. ``Page 9, line 58: I believe you are reducing the alignment columns by 90\%, not 10\%.''
+
+\textbf{Correct, thank you for spotting the mistake.}
+
+%%% REVIEWER 2 %%%
+\section*{Reviewer 2}
+
+1. ``Equation 2 is not really a rearrangement of Eq. 1 because the P term is missing. This only requires a short line to explain that Eq. 2 assumes that there has been at least one mutation.''
+
+\textbf{Yes, we have indeed missed a step in our logic. We have added the missing step and explained it in the text.}
+
+2. ``There is a bit of a confusion between the sequence length, L, and genome size, G. As the authors correctly point out in their discussion (Lines 55 to 59, page 7), L is not the same as G, but in the introduction (Lines 61 to 61, page 2) they mention that bacteria have higher L but lower R. This is not necessarily the case because it depends on which region of the bacterial genome we consider, however, it is true that bacteria have large genomes and lower rates. Thus, I believe that the authors here mean that bacteria have larger G and lower R. I suggested editing this, or removing this sentence and discussing this in the discussion, where the relationship between L and G is explained in more detail.''
+
+\textbf{We think that G and L notation is useful in avoiding confusion and adopt it throughout the manuscript, thank you.}
+
+3. ``There needs to be a clear mention somewhere about how much faster GP evolves with respect to the complete genome. For example, if it evolves 2 times faster than the rest of the genome, and it represents 1/10th of the whole genome, then it will certainly have much less informative than the complete genome, how much faster would it need to evolve? My intuition is that it would have to evolve so quickly as to contain a vast majority of all variation in the genome, and then it would be subject to saturation etc… Perhaps this should be mentioned in the introduction because throughout the manuscript I kept getting confused between G and L, as there are a few mentions of a negative association between R and L (very similar to the well-known inverse relationship between R and G across different organisms).''
+
+\textbf{Agreed that this would improve the manuscript. As it turns out the relationship between the reduction in alignment length and the corresponding acceleration in evolutionary rate required to maintain temporal resolution are inversely proportional, such that using only 10\% of the sites available in the genome would require the region to evolve 10 times faster than the genomic average. We have added a discussion of this to the text and similar to the reviewer's previous point we use the L and G notation throughout.}
+
+4. ``In lines 58 to 62, page 3 and throughout the rest of the manuscript there is some discussion about how Bayesian inference can resolve branching times, but maximum likelihood cannot. This is not necessarily the case, BEAST does use a tree prior that is rooted and based on a demographic/branching process, which means that all trees are chronograms, mostly with non-zero branch lengths. MrBayes can use a flat tree prior on topologies and an unconstrained model, so the trees are effectively 'phylograms' (branch lengths in subs/site). Therefore, the resolution of branching times is not inherent to Bayesian methods, it is just the result of the branching model (i.e. tree prior). Moreover, a molecular clock method in maximum likelihood, like LSD would still fail to resolve these branches. If one took a consensus tree from BEAST, it is likely that these branches would be collapsed into a polytomy, as it seems to be the case in maximum likelihood.''
+
+\textbf{Yes, we agree too and apologise for the misunderstanding. We have altered the text to reflect that resolving branching order is performed via the tree prior rather than as a result of Bayesian inference.}
+
+5. ``Line 21, page 8 states "sequences are assigned to compartments that are too small", what do the authors mean by 'compartments'?''
+
+\textbf{We are sorry for the confusion - `compartments' in that sentence meant states, \textit{i.e.} if more states are introduced into a model the finer granularity of the model might not be matched by the temporal resolution available in the data.}
+
+6. ``Line 5 age 9 mentions that branch lengths are determined via the clock model and the tree prior. In practice, it is the tree prior only and note that it is also an artefact of the summary tree used (see point 4 above). In fact, these branches are resolved in units of time (i.e. in the chronogram), but if one multiplied rates and times to obtain a phylogram, they would still be unresolved. This leads the reader think that the output of beast (a chronogram with a tree prior) is equivalent to a phylogram (with subs/sites/year from maximum likelihood here, or one that is transformed using an evolutionary rate), when they are very different things.''
+
+\textbf{Yes, we agree. We have corrected this sentence.}
+
+7. ``There is some discussion about using shorter sequences being problematic for the MCMC. I don't think this is the case. That sequences are less informative means that the prior and posterior are more similar. If the prior is less peaky then so is the posterior. The goal of all Bayesian methods is to approximate this posterior, so regardless of the method, parameter space is wider. For example, one could use sequence data with low information content but with highly informative priors to obtain a peakier posterior that is easier to sample via MCMC. Conversely, with a model with many parameters and diffuse priors, even very informative data might make it difficult for the MCMC sampler to perform well.''
+
+\textbf{We agree entirely with the reviewer here and would like to thank them for pointing this out. We have edited the text accordingly.}
+
+8. ``The conclusion ends by saying that it is 'ill-advised' to sequence short genomic regions. I completely agree with this statement, but it is not due to bias in the estimates. Rather, the estimates are likely to be very uncertain, which is something that one could assess anyway by comparing the prior and posterior. I suggest adding a sentence to explain how one would go about assessing whether one has used an overly short genomic region for a particular study (this is trivial in viruses with current technology, but less so in bacteria and other pathogens).''
+
+\textbf{We did not mean to imply that bias was the issue in our conclusion and are not sure where confusion crept in. We do however think that providing guidelines might give researchers some intuition as to how bad the problem really is. We have added a section in the text about how much the evolutionary rate has to be increased to compensate for loss of sites, which indicates rapid and non-linear degeneration of resolution.}
+
+9. ``In the methods section I noted that an 'uninformative' prior was used for the rate. What does this mean? Is it the CTMC prior in beast1 or just a uniform with some bounds?''
+
+\textbf{Our apologies for this oversight. The reviewer is correct in that we used the CTMC reference prior, this has been fixed in the text.}
+
+10. ``The inference of tip dates is an interesting experiment, but a fundamental aspect about this analyses is that the tip dates are treated as parameters, which have priors. What were the priors here?''
+
+\textbf{Apologies for missing this. We used a uniform prior over the range of dates 2013 December 01 and 2015 December 01, which correspond roughly with the duration of the West African epidemic. This has been fixed in the text.}
+
+\end{document}
