@@ -143,8 +143,6 @@ These subgenomic fragments were often chosen for their diversity, such as viral 
 Whilst subgenomic fragments of pathogens are very accurate and specific as diagnostic markers and informative about long-term evolution, their length (dictated by the compromise between information content and ease of sequencing) limits their utility in detailed molecular epidemiology investigations, for example during outbreaks \citep{wohl_co-circulating_2018}, as only mutations occurring within the small region of the genome that is sequenced are available for phylogenetic inference.
 
 Molecular clocks have been particularly useful in molecular epidemiology, where the accumulation of mutations between sequences is used as a noisy approximation for elapsed time, given either times of events in the phylogeny (sequence dates or dates of common ancestors) or a previously determined molecular clock rate.
-% Mutations, prior to the action of selection, occur randomly across a genome via misincorporation of nucleotides during replication by the polymerase.
-% Many of these mutations are filtered out by selection if they adversely affect protein function, with leftover mutations being beneficial, neutral, or mildly deleterious.
 Generally, neutral pathogen variation at the nucleotide level ebbs and flows under the forces of population genetics, unlike beneficial or deleterious variation which tends to either fix or be purged rapidly, respectively.
 Due to their random and discrete nature, mutations are modelled as a Poisson process \citep{yang_computational_2006} where the waiting time $t$ for observing a mutation at a single site is exponentially distributed with evolutionary rate parameter $R$.
 The probability of observing 0 mutations at a single site after time $t$ is $e^{-Rt}$ and the probability of at least one mutation is therefore $1-e^{-Rt}$.
@@ -168,21 +166,12 @@ Since both maximum plausible evolutionary rates $R$ and genome length $G$ are la
 Sequencing recovers some fraction $f$ of the genome length $G$ ($L=Gf$) for analyses, and sequencing complete genomes ($f=1.0; L = G$) is the best possible scenario, since sequencing any shorter region requires the evolutionary rate to increase by a factor of $\frac{1}{f}$, which even if $L = 0.4 G$ means the evolutionary rate would have to be 2.5 times faster in the remaining 0.4 of the genome to be able to record information in the form of mutations at the same speed as complete genomes.
 The message of our manuscript, at least as far as densely sampled infectious disease outbreaks go, is that the task of sequencing a complete pathogen genome will rarely be as miserable a task as analysing a fraction of one.
 
-% Because of these natural constraints there is thus a lower limit to how many mutations can be expected to occur in a given length of sequence evolving at a particular evolutionary rate.
-% We thus refer to the mean waiting time for a mutation as the temporal horizon, which reflects a theoretical temporal resolution over which mutations arise and are available for phylogenetic inference in a study system.
-
 In this study we show this by quantifying how much information relevant to phylodynamic analysis is lost when shorter genomic regions are used instead of full genomes.
 By focusing our attention on a subset (600 sequences) of a well-characterised genomic sequence data (comprised of >1600 viral genomes) set derived from the West African Ebola virus epidemic of 2013-2015 \citep{dudas_virus_2017} we estimate loss in precision and accuracy of molecular clock models and phylogeographic inference methods when only the glycoprotein gene (GP), a region representing just 10\% of the viral genome, is analysed despite GP evolving at rates faster than the genomic average.
 Our methods rely on masking tip dates and locations for 60 (10\%) of the sequences in a classic training-testing split, where we re-infer these parameters as latent variables using Markov chain Monte Carlo (MCMC).
 We show that this reduction in data not only leads to severe mixing issues in MCMC analyses by removing the constraints additional data impose on plausible parameter space without adding restrictive priors to compensate, but can also result in unreliable tip date and location inference.
 Despite achieving much better temporal resolution when using complete viral genomes we still find residual error caused by inherent randomness of mutations which is close to theoretical expectations (Eq \ref{horizon}).
 We refer to this as the temporal horizon, \textit{i.e.} a temporal resolution limit where population processes occurring at a rate faster than the rate at which mutations enter and are observed in a population will not be captured with high fidelity, even with genome sequences.
-% As such, pathogen genomes have an inherent temporal resolution limit, where processes occurring at a rate lower than the rate of evolution of a given pathogen will not be recovered reliably using currently standard phylogenetic methods.
-% We refer to this as the temporal horizon and express it as the mean waiting time until at least one mutation occurs and differentiates a pair of evolving sequences.
- % which is already substantial for fine scale epidemiology and that sequencing subgenomic fragments of a pathogen results in loss of information that can make sequence data unreliable beyond diagnostics and typing.
-% In order to highlight how much information is lost and to relate the concept of temporal horizon with real data we use a subset of a well-characterised dataset of Ebola virus genomes from West Africa collected in 2014-2015 \citep{dudas_virus_2017}.
-% By analysing both complete viral genomes and the same dataset reduced to just the surface glycoprotein GP (corresponding with just 10\% of all genomic sites), we show substantial loss of predictive power, incorrect or unreliable reconstructions of past events, and migration model, despite increased evolutionary rate in GP compared to complete genome.
-% We hope that analyses presented here may serve as a guide to researchers in the field of genetic epidemiology of how to think about the statistical power of sequence data itself, as well as encouragement to model developers to address the widening rift between data volumes and methods used to analyse them.
 
 \begin{figure}[h]
  \centering
@@ -298,7 +287,6 @@ Despite the lack of strong contrast in power to infer masked locations between g
 
 Similarly, locations are inferred correctly more often with complete genomes than with GP sequences, where the maximum probability location (\textit{i.e.} the model's best guess) matches the truth, where using complete genomes results in 0.540 probability of guessing correctly compared to 0.286 probability for GP (for a calibration of both models see Figure \ref{calibration}).
 The model makes these guesses with more certainty too, where the mean probability of the true location is 0.482 with genomes and 0.219 with GP, and mean probability of best guess (\textit{i.e.} maximum probability) is 0.680 and 0.396, respectively.
-% \tbc{Need to more carefully define what you mean by `inferred correctly'. Cross-entropy does this well, otherwise need a cut-off for assignment. Over 50\%?}
 We also calculated the great circle distances between the population centroids of true and each predicted location weighed by probability, which should ideally be 0.0 (0 km distance multiplied by probability of 1.0).
 The mean of these distances across masked tips are 75.886 kilometres for genomes compared to 164.309 km for GP sequences.
 
@@ -317,13 +305,6 @@ An older ancestor of strain `PL5294' had migrated from Gu\'{e}ck\'{e}dou prefect
 Finally, the transmission chain/lineage that would eventually give rise to strain `EM\_004422' had a tumultous history in the region.
 Strains `EM\_004422', `14859\_EMLK' and `MK3462' all shared the same common ancestor in Kailahun district of Sierra Leone, but the progenitor of strain `EM\_004422', unlike its relatives, made a jump to Liberia (Lofa and Montserrado counties), from where \textit{its} descendants spilled back into Macenta prefecture in Guinea.
 This transmission chain would later leave descendants (of which `EM\_004422' is representative) that jumped to neighbouring Kissidougou prefecture (also Guinea) and where strain `EM\_004422' was collected \citep{carroll_temporal_2015}.
-
-
-
-% One of these is strain `14859\_EMLK', a virus descended from the initial sweep of Ebola virus through Sierra Leone via Kailahun and Kenema districts which eventually ended up in Conakry (Guinea) from where it jumped back into Sierra Leone late in the epidemic where it was sequenced \citep{arias_rapid_2016}.
-% `EM\_004422', which migrated through Kailahun district of Sierra Leone too, but then spread into Liberia from which it spilled back into Guinea via Macenta prefecture before ending up in Kissidougou (Guinea) where it was sequenced \citep{carroll_temporal_2015}.
-% Similar to other lineages, `MK3462' was part of the sweep through Sierra Leone, though unlike others remained in-country, migrating to the environs of Freetown and then Bombali district where it was sequenced \citep{arias_rapid_2016}.
-% `PL5294', unlike others, belonged to a lineage that was not part of the Sierra Leonean sweep and instead part of an unusual and under-sampled lineage endemic to western Guinea (``lineage A'', \citep{carroll_temporal_2015}), from where it spilled into Sierra Leone's Kambia district late in the epidemic \citep{arias_rapid_2016}.
 
 The histories of the lineages that gave rise to these four tips are, for the most part, reconstructed from both GP sequences and genomes consistently (Figure \ref{trace}), likely as a result of additional information brought in by specifying tip dates and their collection locations.
 Genomic data tend to concentrate the probability mass towards a single location at any given time, in contrast to GP sequences where several locations can be considered with non-negligible probabilities at numerous time points (Figure \ref{trace} and Figure \ref{trace_entropy}) and where timing of ancestral migration events is considerably more diffuse or even substantially off (\textit{i.e.} Figure \ref{trace}A and D).
@@ -458,7 +439,7 @@ Another dataset was generated by extracting the glycoprotein GP coding sequence 
 Both GP and genome datasets were analysed in BEAST v1.8.10 \citep{suchard_bayesian_2018} under the generalised linear model (GLM) described previously \citep{faria_simultaneously_2013,lemey_unifying_2014,dudas_virus_2017} to infer the migration model.
 Sites in both GP and genome alignments were partitioned into codon positions 1, 2, and 3, with the genome analysis also including a partition comprised of non-coding intergenic regions.
 Each partition was assigned an independent HKY+$\Gamma_{4}$ \citep{hky_1985,yang_1994} substitution model.
-A relaxed molecular clock \citep{drummond_2006} with an uninformative prior on the mean \citep{ferreira_bayesian_nodate} of the log-normal distribution was used as the clock model.
+A relaxed molecular clock \citep{drummond_2006} with an uninformative CTMC reference prior on the mean \citep{ferreira_bayesian_nodate} of the log-normal distribution was used as the clock model.
 A flexible skygrid tree prior \citep{gill_2013} was used to infer estimates of effective population size across 100 evenly spaced points in time starting 1.5 years prior to the collection of the most recent sequence to the date of the most recent sequence.
 
 Both analyses (genome and GP) were set to run for 500 million states, sampling  every 50,000 states and run three (genome) or seven (GP) times independently.
@@ -591,7 +572,9 @@ The authors declare that there is no conflict of interest.
  \centering
 	\includegraphics[width=0.75\textwidth]{supp_figures/sfigX_treetimeLocations.png}
 	\caption{\textbf{Maximum likelihood inference of masked sequence location from genomes (left) and GP sequences (right) via a CTMC model implemented in TreeTime.}
-  Unlike the Bayesian GLM where probabilities are spread across different locations, the CTMC gives categorical support to one location.
+  Horizontal bars indicate the posterior distribution of masked tip locations, coloured by country (Sierra Leone in blue, Liberia in red, Guinea in green) and location (lighter colours indicate administrative divisions lying towards west of the country).
+  The correct location of each tip is outlined in white, with the smaller plot to the right showing only the probability of the correct location.
+  Bars marked with an open circle indicate cases where the correct location is within the 95\% credible set and solid circles indicate cases where the location with the most probability is also the correct location.
   Genomes still perform better in terms of correct guess (0.432 probability that best guess location is true location for genomes versus 0.259 for GP), cross entropy (12012.800 nats for genome versus 24397.109 nats for GP) and mean probability-weighted great circle distance between true location population centroid and estimated location population centroid (87.568 km for genome versus 124.909 km for GP).
 	}
 	\label{TTlocations}

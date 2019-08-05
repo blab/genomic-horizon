@@ -100,11 +100,11 @@ Original reviewer criticisms are in plain text.  Our responses follow in \textbf
 
 2.2. ``I note that this is especially worrying to me because the lead author published a paper analysing the full 1,610 EBOV sequence dataset under roughly the same model (the difference here is that some tip-dates and -locations are unknown). I couldn't find any notes/statistics about convergence in that paper, and without further explanation the results reported here calls into question the results of the previous paper. (Clarify if the non-convergence here is due to differences in the model used or if the original analysis also did not converge).''
 
-\textbf{Not mentioning convergence/mixing in the previous paper was an error on our part and we apologise for that. There were a number of factors which helped mixing in our previous paper, such as full information (\textit{i.e.} 10\% of data are not missing), having more collection dates to restrict parameter space, and better hardware to run analyses within reasonable time. Even then some parameters (likelihood for intergenic regions and random effects) had ESSs above 100 but below 200 with likelihood for first codon position having the worst ESS at 43. For that particular paper we have run numerous models with the same data over the course of the study and the mixing issues had always been there. Having said that we never saw any results that would affect our conclusions.}
+\textbf{Not mentioning convergence/mixing in the previous paper was an error on our part and we apologise for that. There were a number of factors which helped mixing in our previous paper, such as full information (\textit{i.e.} 10\% of data are not missing), having more collection dates to restrict parameter space, and better hardware to run analyses within reasonable time. Even then some parameters (likelihood for intergenic regions and random effects) had ESSs above 100 but below 200 with likelihood for first codon position having the worst ESS at 43. For that particular paper we have run numerous models with the same data over the course of the study and the mixing issues had always been there. Having said, despite numerous iterative refinements we have never seen MCMC run for the 2017 paper spuriously converge on anything that would change our conclusions.}
 
 3. ``How did you compute the HPDs for multi-peaked posterior distributions? It is mentioned that a custom Python script was used, but not what this script actually does. It sounds like the posteriors are multi-peaked because you combined chains that converged to different peaks, not because all chains were mixing across all of the different peaks, so the authors' strategy here needs to be explained in more detail.''
 
-\textbf{The posteriors for tip dates had examples of both chains sampling from two to three distributions independently and chains where each run converged onto one of two or three distributions. We now explain this in the text and provide a description for how the disjoint posteriors were computed.}
+\textbf{The posteriors for tip dates had examples of both chains sampling from two to three distributions independently and chains where each run converged onto one of two or three distributions. We now explain this in the text and provide a description for how the disjoint posteriors were computed. Briefly, it involves an iterative approach where we intersect peaks of kernel density estimates, compute the integral of areas intersected and broaden the search until the peaks intersected capture 0.95 of the area under the kernel density estimate.}
 
 4. ``Equation 3 is not the mean absolute error. It is the mean signed deviation. It would actually be useful to also report the mean signed deviation, since this would give some indication of the direction of the bias in estimates. (Fig. 2 does show the bias of the mean posterior estimates, but I couldn't find any mention of it in the text).''
 
@@ -132,7 +132,7 @@ Original reviewer criticisms are in plain text.  Our responses follow in \textbf
 
 10. ``Isn't it possible to summarise all of the statistics computed on the estimated tip-dates and -locations in a table or boxplots?''
 
-\textbf{We have included an extra supplementary figure that depicts all of the major statistics reported in the manuscript.}
+\textbf{We have included an extra supplementary figure (Fig S8) that depicts all of the major statistics reported in the manuscript.}
 
 11. ``It is worth pointing out that although the broad patterns in Fig. 4 appear similar, some locations receive only a very low probability for GP alone and the timing of the migrations can shift quite a bit (e.g. Conakry in Fig. 4A and D).''
 
@@ -144,7 +144,7 @@ Original reviewer criticisms are in plain text.  Our responses follow in \textbf
 
 13. ``There has been a fair amount of interest in doing phylodynamics with bacterial genomes, especially tuberculosis, and the argument is often made that because the genomes are so much longer it is not necessary to only look at very long timescales. I did a quick back-of-the-envelope calculation and got ~3.5 years for the temporal horizon of TB (I may have made a mistake, and I considered the genome length, not just variable sites). This obviously won't fit into the figure, but it would be nice to have a note about the temporal horizon for bacterial genomes in the text.''
 
-\textbf{We agree that bacteria have joined the ranks of measurably evolving populations thanks to genomics. The estimated temporal horizon for TB the reviewer has calculated is approximately correct - quickly googling for parameters of interest (genome length = 4.4Mb, evolutionary rate = $1\times10^{-7}$) it's 2.27 years (1/(genome length * evolutionary rate)). We have included a section in the discussion that mentions a couple of bacterial examples.}
+\textbf{We agree that bacteria have joined the ranks of measurably evolving populations thanks to genomics. The estimated temporal horizon for TB the reviewer has calculated is approximately correct - quickly googling for parameters of interest (genome length = 4.4Mb, evolutionary rate = $1\times10^{-7}$) it's 2.27 years (1/(genome length * evolutionary rate)). We have included a section in the discussion that mentions a couple of bacterial examples, though, as we note, rate estimates in bacteria can have a wide margin of error depending on how they were calculated, and, as it is clear from the cited M. tuberculosis and what we have reported in this response, even reported genome lengths can differ meaningfully.}
 
 14. ``Page 6, second last line: waiting $->$ waiting time.''
 
@@ -159,7 +159,7 @@ Original reviewer criticisms are in plain text.  Our responses follow in \textbf
 
 1. ``Equation 2 is not really a rearrangement of Eq. 1 because the P term is missing. This only requires a short line to explain that Eq. 2 assumes that there has been at least one mutation.''
 
-\textbf{Yes, we have indeed missed a step in our logic. We have added the missing step and explained it in the text.}
+\textbf{Yes, we have indeed missed a step in our logic. We have added the missing step and explained it in the text. The missing step was taking the mean expectation, so that an arbitrary threshold for the probability of observing a mutation would not need to be established. The mean of an expontential distribution is just 1/rate.}
 
 2. ``There is a bit of a confusion between the sequence length, L, and genome size, G. As the authors correctly point out in their discussion (Lines 55 to 59, page 7), L is not the same as G, but in the introduction (Lines 61 to 61, page 2) they mention that bacteria have higher L but lower R. This is not necessarily the case because it depends on which region of the bacterial genome we consider, however, it is true that bacteria have large genomes and lower rates. Thus, I believe that the authors here mean that bacteria have larger G and lower R. I suggested editing this, or removing this sentence and discussing this in the discussion, where the relationship between L and G is explained in more detail.''
 
@@ -175,7 +175,7 @@ Original reviewer criticisms are in plain text.  Our responses follow in \textbf
 
 5. ``Line 21, page 8 states "sequences are assigned to compartments that are too small", what do the authors mean by 'compartments'?''
 
-\textbf{We are sorry for the confusion - `compartments' in that sentence meant states, \textit{i.e.} if more states are introduced into a model the finer granularity of the model might not be matched by the temporal resolution available in the data.}
+\textbf{We are sorry for the confusion - `compartments' in that sentence meant states, \textit{i.e.} if more states are introduced into a model the finer granularity of the model might not be matched by the temporal resolution available in the data. We have added this explanation to the text.}
 
 6. ``Line 5 age 9 mentions that branch lengths are determined via the clock model and the tree prior. In practice, it is the tree prior only and note that it is also an artefact of the summary tree used (see point 4 above). In fact, these branches are resolved in units of time (i.e. in the chronogram), but if one multiplied rates and times to obtain a phylogram, they would still be unresolved. This leads the reader think that the output of beast (a chronogram with a tree prior) is equivalent to a phylogram (with subs/sites/year from maximum likelihood here, or one that is transformed using an evolutionary rate), when they are very different things.''
 
