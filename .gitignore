@@ -45,7 +45,6 @@ _site/
 *.jar
 *.rar
 *.tar
-*.zip
 
 # OS generated files #
 ######################
