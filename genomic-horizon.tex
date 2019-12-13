@@ -249,7 +249,7 @@ We propose a simple intuitive metric for quantifying temporal resolution, \texti
 %%
 %
 %
-\section*{Introduction}
+\section*{Background}
 
 The combination of decreasing cost of sequencing and the unparalleled insight it offers have led to the adoption of pathogen genetic sequencing as one of the most effective tools in a modern epidemiologist's toolkit.
 When coupled with sophisticated models of evolution pathogen sequences can be used to look into epidemiological features such as cryptic transmission \cite{faria_establishment_2017}, migration \cite{lemey_bayesian_2009,lemey_unifying_2014}, and origins \cite{smith_origins_2009} of infectious diseases amongst others.
@@ -260,7 +260,7 @@ With appropriate sampling and information (``metadata'') about sequences histori
 Changes in pathogen population sizes over time \cite{pybus_integrated_2000}, inference of unobserved ancestral states \cite{dudas_mers-cov_2018}, correlates of processes \cite{faria_simultaneously_2013,dudas_virus_2017}, and overall phylodynamic \cite{grenfell_unifying_2004} patterns can be inferred from molecular phylogenies and used to understand patterns of pathogen transmission at a number of scales.
 
 Before widespread adoption of high-throughput sequencing limitations and costs led to amplification and sequencing of short fragments of pathogen genomes \cite{jin_genetic_1999,jin_proposal_2005}.
-These subgenomic fragments were often chosen for their diversity such as viral surface glycoproteins that experience selective pressures from vertebrate immune systems or their utility such as routine sequencing of HIV \textit{pol} gene to test for drug resistance \cite{kaye_phylogenetic_2008,rhee_human_2003}.
+These subgenomic fragments were often chosen for their diversity such as viral surface glycoproteins that experience selective pressures from vertebrate immune systems or their utility such as routine sequencing of Human immunodeficiency virus (HIV) \textit{pol} gene to test for drug resistance \cite{kaye_phylogenetic_2008,rhee_human_2003}.
 Whilst subgenomic fragments of pathogens are very accurate and specific as diagnostic markers and informative about long-term evolution their length (dictated by the compromise between information content and ease of sequencing) limits their utility in detailed molecular epidemiology investigations for example during outbreaks \cite{wohl_co-circulating_2018} as only mutations occurring within the small region of the genome that is sequenced are available for phylogenetic inference.
 
 Molecular clocks have been particularly useful in molecular epidemiology where the accumulation of mutations between sequences is used as a noisy approximation for elapsed time, given either times of events in the phylogeny (sequence dates or dates of common ancestors) or a previously determined molecular clock rate.
@@ -327,7 +327,7 @@ However, a simpler continuous time Markov chain model where each individual pair
 
 
 Inferring masked tip dates from 10\% of the sequences (Figure \ref{dates}) is an intuitive way to show both the inherent noisiness of molecular clock estimates as reflected in the width of 95\% highest posterior density intervals for inferred dates and the differences in temporal resolution between GP and genome alignments.
-True collection dates for genomes are mostly (56 out of 60, corresponding to a coverage probability of 0.93) within the 95\% highest posterior density of estimated dates and the mean absolute error is $\approx$22 days across all masked tips.
+True collection dates for genomes are mostly (56 out of 60, corresponding to a coverage probability of 0.93) within the 95\% highest posterior density (HPD) of estimated dates and the mean absolute error is $\approx$22 days across all masked tips.
 In contrast the 95\% HPDs for inferred dates in the GP dataset capture more of the true dates (58 out of 60, coverage probability $\approx$0.96) at the cost of markedly reduced precision with mean absolute error going up to $\approx$106 days or $\sim$3.5 months.
 Despite having lower coverage probability more precise date estimates are derived from complete genomes with an average 95\% HPD width of $\approx$102 days compared to $\approx$458 days for GP.
 Another way of thinking about where the loss of information occurs is to consider root-to-tip against tip date regressions shown in Figure \ref{rtt} where waiting times for mutations are too long to estimate the slope of the regression reliably as every new mutation is seen across sequences collected over a longer interval of time.
@@ -395,19 +395,19 @@ Extending the region that is sequenced, on the other hand, is often trivial outs
 
 To help researchers intuit the impact of sequence length and evolutionary rate on temporal resolution we show the relationship between evolutionary rate and alignment length in determining mean waiting times until a mutation is observed in Figure \ref{contours}.
 In addition to theoretical expectations we also show where a variety of viral pathogens fall along the two axes - estimated evolutionary rates with uncertainty intervals on the y-axis and alignment length on the x-axis.
-Subgenomic alignments shown in Figure \ref{contours} include the small hydrophobic (SH) gene of mumps virus \cite{cui_evolutionary_2017} and glycoprotein (GP) sequences of Ebola virus analysed in this study as well as sequences of two human influenza A viruses: genome of subtype H1N1/09 \cite{hedge_real-time_2013}, and haemagglutinin sequences of subtypes H1N1/09 \cite{smith_origins_2009} and H3N2 \cite{rambaut_genomic_2008}, sequences of two commonly studied blood-borne pathogens: \textit{pol}, \textit{env}, and coding regions of HIV-1M \cite{patino-galindo_substitution_2017} and NS5B region of hepatitis C virus \cite{magiorkinis_global_2009}.
-With respect to temporal resolution influenza A virus HAs are expected to acquire a mutation every one to two months on average compared to around three to six months for Ebola virus GP and over a year for mumps virus SH.
+Subgenomic alignments shown in Figure \ref{contours} include the small hydrophobic (SH) gene of mumps virus \cite{cui_evolutionary_2017} and glycoprotein (GP) sequences of Ebola virus analysed in this study as well as sequences of two human influenza A viruses: genome of subtype H1N1/09 \cite{hedge_real-time_2013}, and haemagglutinin sequences of subtypes H1N1/09 \cite{smith_origins_2009} and H3N2 \cite{rambaut_genomic_2008}, sequences of two commonly studied blood-borne pathogens: \textit{pol}, \textit{env}, and coding regions of HIV-1M \cite{patino-galindo_substitution_2017} and nonstructural protein 5B (NS5B) region of hepatitis C virus \cite{magiorkinis_global_2009}.
+With respect to temporal resolution influenza A virus haemagglutinin gene (HA) is expected to acquire a mutation every one to two months on average compared to around three to six months for Ebola virus GP and over a year for mumps virus SH.
 Though all of these sequences are from (-)ssRNA viruses SH and GP genes are part of a single non-recombining RNA genome \cite{chare_phylogenetic_2003} whereas HA genes of influenza A viruses are encoded on their own segment which can be unlinked from their genomic background via reassortment.
 Because Ebola and mumps virus genomes do not recombine their polymerases may have been selected for higher fidelity due to Hill-Robertson effect.
 
 Complete genomes, on the other hand, occupy parameter space that implies that a new mutation occurs on average every month or every few weeks.
 This is achieved through having more sites rather than substantial differences in evolutionary rates, which differ only marginally with respect to subgenomic fragments.
-Despite this no virus is expected to acquire mutations faster than about once per week on average and the two genomes with highest predicted temporal resolution - MERS-CoV and H1N1/09 - are difficult to analyse due to recombination and reassortment, respectively, though advances are being made in modelling reticulate evolution \cite{vaughan_inferring_2017}.
+Despite this no virus is expected to acquire mutations faster than about once per week on average and the two genomes with highest predicted temporal resolution - Middle East respiratory syndrome coronavirus (MERS-CoV) and H1N1/09 - are difficult to analyse due to recombination and reassortment, respectively, though advances are being made in modelling reticulate evolution \cite{vaughan_inferring_2017}.
 The inverse relationship between observed evolutionary rate and sequence length is similar but not the same as the relationship between virus genome sizes and mutation rates where high mutation rates and large genome sizes lead to substantial deleterious mutation load \cite{gago_extremely_2009}.
 This upper limit on mutation waiting times set by optimal evolutionary rates is what we refer to as the temporal horizon - population processes with inverse of rate (\textit{i.e.} waiting time) less than the rate at which a pathogen acquires mutations will not be captured with high fidelity by currently existing methods.
 The exact relationship between mutation waiting times and rates of processes will of course be complicated by the presence of co-circulating lineages, site-wise rate heterogeneity, and choice of model for population processes of interest.
 
-\section*{Conclusions}
+\section*{Discussion}
 \subsubsection*{Theoretical considerations}
 For studies focused on temporal dynamics of pathogens over shorter periods of time the waiting time for a mutation should ideally be smaller than the inverse of the rate at which a process of interest occurs.
 Serial interval is often of most interest usually and has been addressed previously \cite{campbell_when_2018,grubaugh_tracking_2019} but migration or cross-species transmission rates could also exceed the critical temporal resolution threshold if sequences are assigned to compartments that are too small, \textit{i.e.} the granularity of the analysis is increased by using a larger state space in the model.
@@ -600,9 +600,39 @@ where N is the number of masked tips, $q_{i}$ is the probability of the true loc
 
 \begin{backmatter}
 
+\section*{Abbreviations}
+\begin{itemize}
+  \item BEAST - Bayesian Evolutionary Analysis by Sampling Trees.
+  \item BF - Bayes factor.
+  \item CAT - short for \textunderscore{cat}egories.
+  \item CTMC - continuous time Markov chain.
+  \item ESS - effective sample size.
+  \item GLM - generalised linear model.
+  \item GP - glycoprotein.
+  \item GTR - generalised time reversible.
+  \item H1N1 - haemagglutinin 1, neuraminidase 1.
+  \item H3N2 - haemagglutinin 3, neuraminidase 2.
+  \item HA - haemagglutinin.
+  \item HIV - Human immunodeficiency virus.
+  \item HKY - Hasegawa-Kishino-Yano.
+  \item HPD - highest posterior density.
+  \item km - kilometres.
+  \item Mb - megabases.
+  \item MCC - maximum clade credibility.
+  \item MCMC - Markov chain Monte Carlo.
+  \item MERS-CoV - Middle East respiratory syndrome coronavirus.
+  \item NS5B - nonstructural protein 5B.
+  \item nt - nucleotides.
+  \item SH - small hydrophobic.
+  \item ssRNA - single-stranded ribonucleic acid.
+  \item SPR - subtree prune and regraft.
+  \item subs - substitutions.
+  \item RAxML - Randomized Axelerated Maximum Likelihood.
+  \item RNA - ribonucleic acid.
+\end{itemize}
+
 \section*{Ethics approval and consent to participate}
 Not applicable.
-
 
 \section*{Consent for publication}
 Not applicable.
@@ -616,10 +646,12 @@ The authors declare that they have no competing interests.
 \section*{Funding}
 GD is supported by the Mahan postdoctoral fellowship from the Fred Hutchinson Cancer Research Center.
 TB is a Pew Biomedical Scholar and is supported by NIH R35 GM119774-01.
+The funding bodies played no role in the design of the study and collection, analysis, and interpretation of data and in writing the manuscript.
 
 \section*{Author's contributions}
 GD: Conceptualization, Data curation, Methodology, Writing—review and editing.
 TB: Resources, Supervision, Funding acquisition, Methodology, Project administration, Writing—review and editing.
+All authors have read and approved the manuscript.
 
 \section*{Acknowledgements}
 We would like to thank Andrew Rambaut for useful discussion and advice, Pardis Sabeti for encouragement to conduct this research, and two anonymous reviewers for their input. \\
